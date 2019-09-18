@@ -26,6 +26,16 @@ import pki.tutorial.crypto.CryptoUtils;
  * @author mohamed
  */
 public class DemoUtils {
+    private static final String KEYSTORE_PATH = "C:\\java-pki-tutorial\\crts\\ali.p12";
+    private static final String CRTIFICATE_PATH = "C:\\java-pki-tutorial\\crts\\ali.crt";
+    
+    private static final String CA_PATH = "C:\\java-pki-tutorial\\crts\\ca.cer";
+    private static final String KEYSTORE_PASS = "toortoor";
+    private static final String KEYSTORE_ALIAS = "ali";
+    
+    private static final String TEST_FILE_PATH = "C:\\java-pki-tutorial\\outputs\\test.txt";
+    private static final String TEST_FILE_HASH_PATH = "C:\\java-pki-tutorial\\outputs\\test.sha256";
+    private static final String TEST_FILE_ENCRYPT_PATH = "C:\\java-pki-tutorial\\outputs\\test.encrypted";
 
   
     public static void testGenerateAES() throws NoSuchAlgorithmException{

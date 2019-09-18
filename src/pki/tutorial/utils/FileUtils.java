@@ -24,8 +24,8 @@ import java.security.cert.Certificate;
  */
 public class FileUtils {
 
-    public static String PKCS12_KEYSTORE = "PKCS12";
-    public static String X509_CRT = "X.509";
+    public static final String PKCS12_KEYSTORE = "PKCS12";
+    public static final String X509_CRT = "X.509";
 
     public static KeyStore loadKeyStore(String keyStorePath, String pass) throws FileNotFoundException, KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
         KeyStore keyStore = KeyStore.getInstance(PKCS12_KEYSTORE);
@@ -36,7 +36,7 @@ public class FileUtils {
         return keyStore;
     }
 
-    public Certificate loadCertificate(String path) throws FileNotFoundException, CertificateException {
+    public static Certificate loadCertificate(String path) throws FileNotFoundException, CertificateException {
         CertificateFactory certificateFactory = CertificateFactory.getInstance(X509_CRT);
         InputStream certificateInputStream = new FileInputStream(path);
         Certificate certificate = certificateFactory.generateCertificate(certificateInputStream);
