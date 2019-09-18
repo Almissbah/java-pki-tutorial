@@ -15,14 +15,17 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.Certificate;
 
 /**
  *
  * @author mohamed
  */
 public class FileUtils {
-    
-public static String PKCS12_KEYSTORE="PKCS12";
+
+    public static String PKCS12_KEYSTORE = "PKCS12";
+    public static String X509_CRT = "X.509";
 
     public static KeyStore loadKeyStore(String keyStorePath, String pass) throws FileNotFoundException, KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
         KeyStore keyStore = KeyStore.getInstance(PKCS12_KEYSTORE);
@@ -31,6 +34,13 @@ public static String PKCS12_KEYSTORE="PKCS12";
             keyStore.load(keyStoreData, keyStorePassword);
         }
         return keyStore;
+    }
+
+    public Certificate loadCertificate(String path) throws FileNotFoundException, CertificateException {
+        CertificateFactory certificateFactory = CertificateFactory.getInstance(X509_CRT);
+        InputStream certificateInputStream = new FileInputStream(path);
+        Certificate certificate = certificateFactory.generateCertificate(certificateInputStream);
+        return certificate;
     }
 
     public static byte[] readFile(String inputFilePath) throws IOException {
