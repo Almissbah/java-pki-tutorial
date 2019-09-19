@@ -6,6 +6,7 @@
 package pki.tutorial.crypto;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
@@ -16,12 +17,17 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignatureException;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.X509Certificate;
+import java.util.Date;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import org.bouncycastle.jce.X509Principal;
+import org.bouncycastle.x509.X509V3CertificateGenerator;
 
 /**
  *
@@ -98,6 +104,18 @@ public class CryptoUtils {
         return signature.verify(digitalSignature);
     }
 
+    public static X509Certificate generateSelfSignedCertificate(KeyPair keyPair) throws CertificateEncodingException, IllegalStateException, NoSuchAlgorithmException, SignatureException, InvalidKeyException {
+        X509V3CertificateGenerator cert = new X509V3CertificateGenerator();
+        cert.setSerialNumber(BigInteger.valueOf(1));   //or generate a random number  
+        cert.setSubjectDN(new X509Principal("CN=Almissbah,O=nctr"));
+        cert.setIssuerDN(new X509Principal("CN=Almissbah,O=nctr")); //same since it is self-signed  
+        cert.setPublicKey(keyPair.getPublic());
+        cert.setNotAfter(new Date());
+        cert.setNotBefore(new Date());
+        cert.setSignatureAlgorithm(ALG_SHA256_WITH_RSA);
+        PrivateKey signingKey = keyPair.getPrivate();
+        return cert.generate(signingKey);
+    }
     public static byte[] encodeUTF8(String data) throws UnsupportedEncodingException {
         return data.getBytes(ENC_UTF_8);
     }
