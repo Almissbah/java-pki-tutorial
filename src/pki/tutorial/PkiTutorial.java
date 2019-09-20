@@ -5,22 +5,36 @@
  */
 package pki.tutorial;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import pki.tutorial.utils.DemoUtils;
 
 /**
  *
- * @author mohamed
+ * @author mohammed Almissbah 
+ * Email : mohammed.almissbah@hotmail.com
  */
 public class PkiTutorial {
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws NoSuchAlgorithmException {
-        // TODO code application logic here
-        
-        DemoUtils.testGenerateAES();
-    }
+    public static void main(String[] args) throws NoSuchAlgorithmException, FileNotFoundException, CertificateException {
+        try {
+            // TODO code application logic here
+            
+            DemoUtils.testGenerateAesKey();
+            DemoUtils.testKeyStore();
+        } catch (KeyStoreException | IOException ex) {
+            Logger.getLogger(PkiTutorial.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
     
-}
+}}
