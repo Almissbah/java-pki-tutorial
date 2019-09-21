@@ -6,7 +6,7 @@ This a simple Application for testing.
 
 
 ## Features
-1. Support for some PKCS11 and PKCS12 keystores.
+1. Support for PKCS11 and PKCS12 keystores.
 2. Importing certificates.
 3. Deleting keys and certificates.
 4. Sign and verify signature for files.
