@@ -30,13 +30,8 @@ public abstract class Pkcs11KeyStoreHolder extends BaseKeyStoreHolder {
     }
 
     @Override
-    public void init() {
-        try {
-            buildKeyStore();
-        } catch (Exception ex) {
-            Logger.getLogger(Pkcs11KeyStoreHolder.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+    public void init() throws Exception {
+        buildKeyStore();}
 
     private void buildKeyStore() throws Exception {
 

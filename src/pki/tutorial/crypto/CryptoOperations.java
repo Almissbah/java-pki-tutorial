@@ -31,7 +31,12 @@ import org.bouncycastle.x509.X509V3CertificateGenerator;
  * @author mohammed Almissbah
  */
 public class CryptoOperations {
-
+    public static final String ALG_RSA = "RSA";
+    public static final String ALG_AES = "AES";
+    public static final String ALG_SHA256 = "SHA-256";
+    public static final String ALG_SHA256_WITH_RSA = "SHA256WithRSA";
+    public static final String ENC_UTF_8 = "UTF-8";
+    
     public static byte[] cipherEncryptMode(byte[] data, String algorithm, Key key) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         return cipherOperation(data, algorithm, key, Cipher.ENCRYPT_MODE);
     }

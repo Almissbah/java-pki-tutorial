@@ -26,12 +26,10 @@ public class Pkcs12KeyStoreHolder extends BaseKeyStoreHolder{
    
     
     @Override
-    public void init() {
-        try {
+    public void init() throws Exception {
+     
             mkeyStore= fileUtils.loadKeyStore(mKeyStorePath, mKeyStorePassword);
-        } catch (Exception ex) {
-            Logger.getLogger(Pkcs12KeyStoreHolder.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
     }
     
 

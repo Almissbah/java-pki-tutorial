@@ -20,6 +20,11 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import static pki.tutorial.crypto.CryptoOperations.ALG_AES;
+import static pki.tutorial.crypto.CryptoOperations.ALG_RSA;
+import static pki.tutorial.crypto.CryptoOperations.ALG_SHA256;
+import static pki.tutorial.crypto.CryptoOperations.ALG_SHA256_WITH_RSA;
+import static pki.tutorial.crypto.CryptoOperations.ENC_UTF_8;
 
 /**
  *
@@ -27,11 +32,7 @@ import javax.crypto.SecretKey;
  */
 public class DemoCryptoOperations {
 
-    public static final String ALG_RSA = "RSA";
-    public static final String ALG_AES = "AES";
-    public static final String ALG_SHA256 = "SHA-256";
-    public static final String ALG_SHA256_WITH_RSA = "SHA256WithRSA";
-    public static final String ENC_UTF_8 = "UTF-8";
+
 
     public static SecretKey generateAesKey(int keyBitSize) throws NoSuchAlgorithmException {
      return KeyGenerator.generateSecretKey(keyBitSize, ALG_AES);

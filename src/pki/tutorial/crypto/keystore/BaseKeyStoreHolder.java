@@ -13,6 +13,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
@@ -20,6 +21,7 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import pki.tutorial.crypto.CryptoOperations;
 import pki.tutorial.crypto.utils.CryptoFileUtil;
 import pki.tutorial.crypto.keystore.KeyStoreHolder;
 import pki.tutorial.crypto.utils.FileManager;
@@ -125,5 +127,19 @@ public abstract class BaseKeyStoreHolder implements KeyStoreHolder {
             mkeyStore.store(keyStoreOutputStream, mKeyStorePassword.toCharArray());
         }
     }
+
+    @Override
+    public byte[] signData(String keyAlias, byte[] data) throws Exception{
+        PrivateKey privateKey = getPrivateKey(keyAlias);
+     return CryptoOperations.signData(data, privateKey, CryptoOperations.ALG_SHA256_WITH_RSA);
+ }
+
+    @Override
+    public boolean verifySignature(String keyAlias, byte[] data, byte[] signature) throws Exception{
+        PublicKey publicKey = getCertificate(keyAlias).getPublicKey();
+      return CryptoOperations.verifySignature(data, publicKey, signature, CryptoOperations.ALG_SHA256_WITH_RSA); 
+    }
+     
+     
 
 }

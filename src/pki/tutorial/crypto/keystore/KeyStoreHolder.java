@@ -21,7 +21,7 @@ import java.util.List;
 public interface KeyStoreHolder {
 
     //Every class should have its own init method
-    void init();
+    void init() throws Exception ;
 
     Certificate getCertificate(String alias) throws KeyStoreException;
 
@@ -44,7 +44,8 @@ public interface KeyStoreHolder {
     boolean isEntryExist(String alias) throws KeyStoreException;
 
     void deleteEntry(String alias) throws KeyStoreException;
-
+    byte[] signData(String keyAlias,byte[] data)throws Exception;
+    boolean verifySignature(String keyAlias,byte[] data,byte[] signature)throws Exception;
     boolean isCertificateExist(String alias) throws KeyStoreException;
     boolean isHardToken();
     void storeToDrive(String keyStoreOutputPath) throws Exception ;
