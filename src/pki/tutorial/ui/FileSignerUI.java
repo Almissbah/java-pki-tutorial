@@ -8,8 +8,12 @@ package pki.tutorial.ui;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.KeyStoreException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,36 +38,42 @@ import pki.tutorial.crypto.utils.FileManager;
  */
 public class FileSignerUI extends javax.swing.JFrame {
 
+    private static final String KEYSTORE_TYPE_P12 = "P12";
+    private static final String KEYSTORE_TYPE_ST3 = "St3Token";
+    private static final String KEYSTORE_TYPE_BIT4ID = "Bit4idToken";
+    private static final String KS_SELECTION_ERROR_MSG = "Please choose .p12 file !";
+
+    private final String MSG_ERROR_NO_FILE_SELECTED = "Please select a file first !!";
+    private final String MSG_ERROR_NO_SIGN_FILE = "Can not find the signature file !!";
+
+    private final String MSG_SUCCESS_SIGNED = "Verified successfully, File is signed by ";
+    private final String MSG_FAIL_SIGNED = "Fail to verify, File is not signed by ";
+    private final String MSG_ERROR_PASSWORD = "Please select a keystore and enter its correct password !!";
+    private final String MSG_ERROR_SELECT_A_KEY = "Please select a key !";
+    private final String MSG_ERROR_SELECT_A_FILE = "Please select a file first !!";
+    private final String MSG_INFO_NO_KEYS_IN_KEYSTORE = "Keystore is empty !";
+    private final String MSG_SUCCESS_SIGN = "Signature generated successfully !";
+    private final String MSG_ERROR_NOT_A_PRIVATE_KEY = "Error the selected key is not a private key !";
+    private final String MSG_ERROR_NOT_A_PUBLIC_KEY = "Error the selected key is not a public key !";
+    private final FileManager mFileManager = new FileManager();
+    private List<String> keysAliasList;
     private String mSelectedAlias;
     private File mKeyStoreFile;
     private File mFile;
     private KeyStoreHolder mKeystore;
     private String currentSelectedKeyStoreType = "P12";
-    private static final String KEYSTORE_TYPE_P12 = "P12";
-    private static final String KEYSTORE_TYPE_ST3 = "St3Token";
-    private static final String KEYSTORE_TYPE_BIT4ID = "Bit4idToken";
-    private static final String KS_SELECTION_ERROR_MSG = "Please choose .p12 file !";
-    private List<String> keysAliasList;
-    private final String MSG_ERROR_NO_FILE_SELECTED = "Please select a file first !!";
-    private final String MSG_ERROR_NO_SIGN_FILE = "Can not find the signature file !!";
-    FileManager mFileManager = new FileManager();
-    private final String MSG_SUCCESS_SIGNED = "Verified successfully, File is signed by ";
-    ;
-    private final String MSG_FAIL_SIGNED = "Fail to verify, File is not signed by ";
-    private final String MSG_ERROR_PASSWORD = "Please select a keystore and enter its correct password !!";
-    private final String MSG_ERROR_SELECT_A_KEY="Please select a key !";
-    private final String MSG_ERROR_SELECT_A_FILE="Please select a file first !!";
-    private final String MSG_INFO_NO_KEYS_IN_KEYSTORE="Keystore is empty !";
-    private final String MSG_SUCCESS_SIGN="Signature generated successfully !";
-    private final String MSG_ERROR_NOT_A_PRIVATE_KEY="Error the selected key is not a private key !";
-      private final String MSG_ERROR_NOT_A_PUBLIC_KEY="Error the selected key is not a public key !";
 
     /**
      * Creates new form MainUI
      */
     public FileSignerUI() {
         initComponents();
-        keyList.removeAll();
+
+        addKeylistListener();
+        //  ksTypeSpinner.
+    }
+
+    private void addKeylistListener() {
         ksTypeList.addItemListener((ItemEvent e) -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 // System.out.println("" + e.getItem().toString());
@@ -83,10 +93,7 @@ public class FileSignerUI extends javax.swing.JFrame {
                 }
             }
 
-//To change body of generated methods, choose Tools | Templates.
         });
-
-        //  ksTypeSpinner.
     }
 
     /**
@@ -116,8 +123,11 @@ public class FileSignerUI extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         ksLabel = new javax.swing.JLabel();
         ksTypeList = new javax.swing.JComboBox();
+        btnImport = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 204));
 
         btnLogin.setText("Login");
         btnLogin.addActionListener(new java.awt.event.ActionListener() {
@@ -126,6 +136,7 @@ public class FileSignerUI extends javax.swing.JFrame {
             }
         });
 
+        btnSign.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         btnSign.setText("Sign");
         btnSign.setEnabled(false);
         btnSign.addActionListener(new java.awt.event.ActionListener() {
@@ -183,6 +194,22 @@ public class FileSignerUI extends javax.swing.JFrame {
 
         ksTypeList.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "P12", "St3Token", "Bit4idToken" }));
 
+        btnImport.setText("Import");
+        btnImport.setEnabled(false);
+        btnImport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImportActionPerformed(evt);
+            }
+        });
+
+        btnDelete.setText("Delete");
+        btnDelete.setEnabled(false);
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -210,12 +237,20 @@ public class FileSignerUI extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(ksLabel)
                                 .addGap(18, 18, 18)
-                                .addComponent(ksBrowse)))))
+                                .addComponent(ksBrowse))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnImport)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnDelete))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(17, 17, 17))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(151, 151, 151)
+                .addComponent(jLabel2)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -229,11 +264,7 @@ public class FileSignerUI extends javax.swing.JFrame {
                             .addComponent(jLabel8)
                             .addComponent(jLabel3))
                         .addGap(68, 68, 68)))
-                .addGap(44, 44, 44))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(151, 151, 151)
-                .addComponent(jLabel2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(46, 46, 46))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -266,7 +297,11 @@ public class FileSignerUI extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(fileBrowse)
                             .addComponent(fileLabel))))
-                .addGap(36, 36, 36)
+                .addGap(2, 2, 2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnImport)
+                    .addComponent(btnDelete))
+                .addGap(23, 23, 23)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSign)
                     .addComponent(btnVerify))
@@ -274,22 +309,26 @@ public class FileSignerUI extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel8)
-                .addGap(23, 23, 23))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    void enableSignAndVerify(){
+    private void enableSignAndVerify() {
         btnSign.setEnabled(true);
         btnVerify.setEnabled(true);
         keyList.setEnabled(true);
+        btnImport.setEnabled(true);
+        btnDelete.setEnabled(true);
     }
-    
-      void disableSignAndVerify(){
+
+    private void disableSignAndVerify() {
         btnSign.setEnabled(false);
         btnVerify.setEnabled(false);
         keyList.setEnabled(false);
+        btnImport.setEnabled(false);
+        btnDelete.setEnabled(false);
     }
     private void fileBrowseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileBrowseActionPerformed
         JFileChooser fc = new JFileChooser();
@@ -327,7 +366,6 @@ public class FileSignerUI extends javax.swing.JFrame {
                 if (mKeystore.isInitialized()) {
                     btnLogin.setText("Logout");
                     ksPassword.setEnabled(false);
-                   
                     loadKeyList();
                 }
             } catch (Exception ex) {
@@ -337,7 +375,7 @@ public class FileSignerUI extends javax.swing.JFrame {
             resetApp();
         }
     }//GEN-LAST:event_btnLoginActionPerformed
-    void buildKeyStore() {
+    private void buildKeyStore() {
         String ksPasswordText = ksPassword.getText();
         switch (currentSelectedKeyStoreType) {
             case KEYSTORE_TYPE_P12:
@@ -354,14 +392,15 @@ public class FileSignerUI extends javax.swing.JFrame {
         }
     }
 
-    void loadKeyList() {
+    private void loadKeyList() {
         try {
             keysAliasList = mKeystore.getAliases();
-            if(keysAliasList.size()>0){
-            enableSignAndVerify();}
-            else{
+            if (keysAliasList.size() > 0) {
+                enableSignAndVerify();
+            } else {
                 showMessage(MSG_INFO_NO_KEYS_IN_KEYSTORE);
-            disableSignAndVerify();}
+                disableSignAndVerify();
+            }
             keyList.setModel(new AbstractListModel() {
                 @Override
                 public int getSize() {
@@ -375,10 +414,11 @@ public class FileSignerUI extends javax.swing.JFrame {
             });
         } catch (KeyStoreException ex) {
             showMessage(MSG_INFO_NO_KEYS_IN_KEYSTORE);
-           disableSignAndVerify();  }
+            disableSignAndVerify();
+        }
     }
 
-    void resetApp() {
+    private void resetApp() {
         ksPassword.setEnabled(true);
         ksPassword.setText("");
         mKeystore = null;
@@ -386,7 +426,7 @@ public class FileSignerUI extends javax.swing.JFrame {
         disableSignAndVerify();
     }
 
-    String generateSignatureFilePath() {
+    private String generateSignatureFilePath() {
         return mFile.getPath() + ".sign";
 
     }
@@ -394,23 +434,26 @@ public class FileSignerUI extends javax.swing.JFrame {
         // TODO add your handling code here:
 
         try {
-           
-            if(keyList.getSelectedValue()!=null){
-                 mSelectedAlias = keyList.getSelectedValue().toString();
-                if(mFile!=null){
-                    if(mKeystore.isEntryExist(mSelectedAlias)){
-            byte[] bytesFromFile = mFileManager.readFile(mFile.getPath());
-            byte[] sinature = mKeystore.signData(mSelectedAlias, bytesFromFile);
-            mFileManager.writeFile(sinature, generateSignatureFilePath());
-            if(isSignFileGenerated()){
-            showMessage(MSG_SUCCESS_SIGN);}
+
+            if (keyList.getSelectedValue() != null) {
+                mSelectedAlias = keyList.getSelectedValue().toString();
+                if (mFile != null) {
+                    if (mKeystore.isEntryExist(mSelectedAlias)) {
+                        byte[] bytesFromFile = mFileManager.readFile(mFile.getPath());
+                        byte[] sinature = mKeystore.signData(mSelectedAlias, bytesFromFile);
+                        mFileManager.writeFile(sinature, generateSignatureFilePath());
+                        if (isSignFileGenerated()) {
+                            showMessage(MSG_SUCCESS_SIGN);
+                        }
+                    } else {
+                        showMessage(MSG_ERROR_NOT_A_PRIVATE_KEY);
+                    }
+                } else {
+                    showMessage(MSG_ERROR_SELECT_A_FILE);
                 }
-                else{
-                     showMessage(MSG_ERROR_NOT_A_PRIVATE_KEY);
-                }}
-                else{  showMessage(MSG_ERROR_SELECT_A_FILE);}}
-            else{
-                showMessage(MSG_ERROR_SELECT_A_KEY);}
+            } else {
+                showMessage(MSG_ERROR_SELECT_A_KEY);
+            }
         } catch (IOException ex) {
             Logger.getLogger(FileSignerUI.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
@@ -418,10 +461,10 @@ public class FileSignerUI extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_btnSignActionPerformed
-boolean isSignFileGenerated(){
-    File signFile=new File(generateSignatureFilePath());
-    return signFile.exists();
-}
+    private boolean isSignFileGenerated() {
+        File signFile = new File(generateSignatureFilePath());
+        return signFile.exists();
+    }
     private void btnVerifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerifyActionPerformed
         // TODO add your handling code here:
 
@@ -436,27 +479,67 @@ boolean isSignFileGenerated(){
             showMessage(MSG_ERROR_NO_FILE_SELECTED);
         }
     }//GEN-LAST:event_btnVerifyActionPerformed
-    void verifySignature(File signatureFile) {
-       
-        if(keyList.getSelectedValue()!=null){
-             String keyAlias = keyList.getSelectedValue().toString();
-        try {
-            byte[] signature = mFileManager.readFile(signatureFile.getPath());
-            byte[] fileBytes = mFileManager.readFile(mFile.getPath());
 
-            if (mKeystore.isCertificateExist(keyAlias)) {
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        try {
+            if (keyList.getSelectedValue() != null) {
+                mSelectedAlias = keyList.getSelectedValue().toString();
+                mKeystore.deleteEntry(mSelectedAlias);
+                loadKeyList();
+            }
+
+        } catch (KeyStoreException ex) {
+            Logger.getLogger(FileSignerUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportActionPerformed
+        // TODO add your handling code here:
+
+        JFileChooser fc = new JFileChooser();
+        int i = fc.showOpenDialog(this);
+        if (i == JFileChooser.APPROVE_OPTION) {
+            File fileToImport = fc.getSelectedFile();
+            Certificate crt;
+            try {
+                crt = mFileManager.loadCertificate(fileToImport.getPath());
+
+                mKeystore.importCertificate(((X509Certificate) crt).getSubjectDN().toString(), ((Certificate) crt));
+                loadKeyList();
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(FileSignerUI.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (CertificateException ex) {
+                Logger.getLogger(FileSignerUI.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (KeyStoreException ex) {
+                Logger.getLogger(FileSignerUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+    }//GEN-LAST:event_btnImportActionPerformed
+    private void verifySignature(File signatureFile) {
+
+        if (keyList.getSelectedValue() != null) {
+            String keyAlias = keyList.getSelectedValue().toString();
+            try {
+                byte[] signature = mFileManager.readFile(signatureFile.getPath());
+                byte[] fileBytes = mFileManager.readFile(mFile.getPath());
                 boolean isVerified = mKeystore.verifySignature(keyAlias, fileBytes, signature);
                 if (isVerified) {
                     showMessage(MSG_SUCCESS_SIGNED + " " + keyAlias);
                 } else {
                     showMessage(MSG_FAIL_SIGNED + " " + keyAlias);
                 }
-            }else{
-                showMessage(MSG_ERROR_NOT_A_PUBLIC_KEY);}
 
-        } catch (Exception ex) {
-            showMessage(MSG_FAIL_SIGNED + " " + keyAlias);
-        }}else{showMessage(MSG_ERROR_SELECT_A_KEY);}
+            } catch (Exception ex) {
+                showMessage(MSG_FAIL_SIGNED + " " + keyAlias);
+            }
+        } else {
+            showMessage(MSG_ERROR_SELECT_A_KEY);
+        }
+    }
+
+    private void showMessage(String msg) {
+        JOptionPane.showMessageDialog(this, msg);
     }
 
     /**
@@ -478,13 +561,6 @@ boolean isSignFileGenerated(){
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(FileSignerUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        //</editor-fold>
-
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -497,6 +573,8 @@ boolean isSignFileGenerated(){
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnImport;
     private javax.swing.JButton btnLogin;
     private javax.swing.JButton btnSign;
     private javax.swing.JButton btnVerify;
@@ -517,7 +595,4 @@ boolean isSignFileGenerated(){
     private javax.swing.JComboBox ksTypeList;
     // End of variables declaration//GEN-END:variables
 
-    void showMessage(String msg) {
-        JOptionPane.showMessageDialog(this, msg);
-    }
 }
