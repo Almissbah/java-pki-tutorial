@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pki.tutorial.crypto;
+package pki.tutorial.crypto.keystore;
 
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -18,9 +20,9 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import pki.tutorial.interfaces.CryptoFileUtil;
-import pki.tutorial.interfaces.KeyStoreHolder;
-import pki.tutorial.utils.FileManager;
+import pki.tutorial.crypto.utils.CryptoFileUtil;
+import pki.tutorial.crypto.keystore.KeyStoreHolder;
+import pki.tutorial.crypto.utils.FileManager;
 
 /**
  *
@@ -75,7 +77,7 @@ public abstract class BaseKeyStoreHolder implements KeyStoreHolder {
     }
 
     @Override
-    public void importKeyPair(PrivateKey privateKey, String alias, Certificate[] chain) throws KeyStoreException {
+    public void importKeyPair(String alias,PrivateKey privateKey,  Certificate[] chain) throws KeyStoreException {
         mkeyStore.setKeyEntry(alias, (Key) privateKey, mKeyStorePassword.toCharArray(), chain);
     }
 
@@ -116,6 +118,12 @@ public abstract class BaseKeyStoreHolder implements KeyStoreHolder {
     @Override
     public String getInfo() {
         return mkeyStore.getProvider().getInfo();
+    }
+    
+     public void storeToDrive(String keyStoreOutputPath) throws Exception {
+        try (FileOutputStream keyStoreOutputStream = new FileOutputStream(keyStoreOutputPath)) {
+            mkeyStore.store(keyStoreOutputStream, mKeyStorePassword.toCharArray());
+        }
     }
 
 }

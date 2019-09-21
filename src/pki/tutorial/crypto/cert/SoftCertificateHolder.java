@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pki.tutorial.crypto;
+package pki.tutorial.crypto.cert;
 
-import pki.tutorial.interfaces.CertficateHolder;
+import pki.tutorial.crypto.cert.CertficateHolder;
 import java.io.FileNotFoundException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -17,8 +17,8 @@ import java.security.cert.CertificateException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.security.cert.X509Certificate;
-import pki.tutorial.interfaces.CryptoFileUtil;
-import pki.tutorial.utils.FileManager;
+import pki.tutorial.crypto.utils.CryptoFileUtil;
+import pki.tutorial.crypto.utils.FileManager;
 
 /**
  *
@@ -28,7 +28,7 @@ public class SoftCertificateHolder implements CertficateHolder{
 
     private final String mCertificatePath;
     private Certificate mCertificate;
-    private CryptoFileUtil fileUtils;
+    private final CryptoFileUtil fileUtils;
     public SoftCertificateHolder(String path) {
         this.mCertificatePath = path;
         fileUtils=new FileManager();

@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pki.tutorial.utils;
+package pki.tutorial.demo;
 
+import pki.tutorial.crypto.utils.FileManager;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -14,6 +15,7 @@ import java.security.KeyPair;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -23,9 +25,13 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
-import pki.tutorial.crypto.SoftCertificateHolder;
+import pki.tutorial.crypto.keystore.hard.Bit4IdToken;
+import pki.tutorial.crypto.cert.SoftCertificateHolder;
 import pki.tutorial.crypto.CryptoOperations;
-import pki.tutorial.crypto.SoftKeyStoreHolder;
+import pki.tutorial.crypto.KeyGenerator;
+import pki.tutorial.crypto.keystore.soft.Pkcs12KeyStoreHolder;
+import pki.tutorial.crypto.keystore.hard.St3Token;
+import pki.tutorial.crypto.keystore.KeyStoreHolder;
 
 /**
  *
@@ -34,6 +40,7 @@ import pki.tutorial.crypto.SoftKeyStoreHolder;
 public class DemoUtils {
 
     private static final String KEYSTORE_PATH = "C:\\java-pki-tutorial\\crts\\ali.p12";
+      private static final String KEYSTORE_OUTPUT_PATH = "C:\\java-pki-tutorial\\outputs\\output.p12";
     private static final String CRTIFICATE_PATH = "C:\\java-pki-tutorial\\crts\\ali.crt";
 
     private static final String CA_PATH = "C:\\java-pki-tutorial\\crts\\ca.cer";
@@ -48,14 +55,14 @@ public class DemoUtils {
 
     public static void testGenerateAesKey() throws NoSuchAlgorithmException {
         System.out.println("the key 1 "
-                + new String(CryptoUtils.generateAesKey(128).getEncoded()));
+                + new String(DemoCryptoOperations.generateAesKey(128).getEncoded()));
         System.out.println("the key 2 "
-                + new String(CryptoUtils.generateAesKey(128).getEncoded()));
+                + new String(DemoCryptoOperations.generateAesKey(128).getEncoded()));
     }
 
     public static void testAesEncryptWithFiles() throws NoSuchAlgorithmException, IOException, InvalidKeyException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
         int aesKeySize = 128;
-        SecretKey aesKey = CryptoUtils.generateAesKey(aesKeySize);
+        SecretKey aesKey = DemoCryptoOperations.generateAesKey(aesKeySize);
 
         encryptTestFile(aesKey);
 
@@ -64,19 +71,19 @@ public class DemoUtils {
     }
 
      static void decryptTestFile(SecretKey aesKey) throws IOException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
-        byte[] chiper_text_from_file = FileManager.readFile(TEST_FILE_ENCRYPT_PATH);
+        byte[] chiper_text_from_file = new FileManager().readFile(TEST_FILE_ENCRYPT_PATH);
 
-        byte[] decrypted = CryptoUtils.aesDecrypt(chiper_text_from_file, aesKey);
+        byte[] decrypted = DemoCryptoOperations.aesDecrypt(chiper_text_from_file, aesKey);
 
-        FileManager.writeFile(decrypted, TEST_FILE_PATH_DECRYPTED);
+        new FileManager().writeFile(decrypted, TEST_FILE_PATH_DECRYPTED);
     }
 
      static void encryptTestFile(SecretKey aesKey) throws IOException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
-        byte[] plainText = FileManager.readFile(TEST_FILE_PATH);
+        byte[] plainText = new FileManager().readFile(TEST_FILE_PATH);
 
-        byte[] cihperText = CryptoUtils.aesEncrypt(plainText, aesKey);
+        byte[] cihperText = DemoCryptoOperations.aesEncrypt(plainText, aesKey);
 
-        FileManager.writeFile(cihperText, TEST_FILE_ENCRYPT_PATH);
+        new FileManager().writeFile(cihperText, TEST_FILE_ENCRYPT_PATH);
     }
 
     public static void testCertificates() throws FileNotFoundException, CertificateException {
@@ -87,37 +94,49 @@ public class DemoUtils {
         caCertHolder.init();
 
         System.out.println("is ali signed by ali key ="
-                + aliCertHolder.verifySignKey(aliCertHolder.getPublicKey()));
+                + aliCertHolder.verifySignerKey(aliCertHolder.getPublicKey()));
 
         System.out.println("is ali signed by Ca key ="
-                + aliCertHolder.verifySignKey(caCertHolder.getPublicKey()));
+                + aliCertHolder.verifySignerKey(caCertHolder.getPublicKey()));
 
         System.out.println("is Ca signed by Ca key ="
-                + caCertHolder.verifySignKey(caCertHolder.getPublicKey()));
+                + caCertHolder.verifySignerKey(caCertHolder.getPublicKey()));
 
         System.out.println("is Ca signed by ali key ="
-                + caCertHolder.verifySignKey(aliCertHolder.getPublicKey()));
+                + caCertHolder.verifySignerKey(aliCertHolder.getPublicKey()));
     }
 
-    public static void testKeyStore() throws KeyStoreException, IOException, FileNotFoundException, NoSuchAlgorithmException, CertificateException {
-        SoftKeyStoreHolder keyStoreHolder = new SoftKeyStoreHolder(KEYSTORE_PATH, KEYSTORE_PASS);
-        keyStoreHolder.init();
+    public static void testKeyStore() throws KeyStoreException, IOException, FileNotFoundException, NoSuchAlgorithmException, CertificateException, Exception {
+        KeyStoreHolder keyStoreHolder;
+        keyStoreHolder = new Pkcs12KeyStoreHolder(KEYSTORE_PATH, KEYSTORE_PASS);
+        // keyStoreHolder = St3Token.getInstance("12345678");
+                keyStoreHolder.init();
+        
+        if(keyStoreHolder.isInitialized()){
         List<String> aliasList = keyStoreHolder.getAliases();
         if (aliasList.size() > 0) {
             keyStoreHolder.printAliases();
             
             String firstAlias = keyStoreHolder.getAliases().get(0);
-            X509Certificate firstCert = keyStoreHolder.getCertificate(firstAlias);
+            X509Certificate firstCert = (X509Certificate) keyStoreHolder.getCertificate(firstAlias);
 
             System.out.println(firstCert.toString());
         }
-
+        
+        String subjectDn="CN=Almissbah,O=nctr";
+        KeyPair keyPair=DemoCryptoOperations.generate1024RsaKeyPair();
+        X509Certificate certifcate = DemoCryptoOperations.generateSelfSignedCertificate(keyPair, subjectDn);
+        
+        keyStoreHolder.importKeyPair(subjectDn, keyPair.getPrivate(), new Certificate[]{certifcate});
+       // keyStoreHolder.importCertificate(subjectDn, certifcate);
+        keyStoreHolder.storeToDrive(KEYSTORE_OUTPUT_PATH);
+        }
     }
     
     public static void testGenerateCertificate() throws CertificateEncodingException, IllegalStateException, NoSuchAlgorithmException, SignatureException, InvalidKeyException{
     
         String subjectDn="CN=Almissbah,O=nctr";
-        KeyPair keyPair=CryptoUtils.generate1024RsaKeyPair();
-        X509Certificate certifcate = CryptoUtils.generateSelfSignedCertificate(keyPair, subjectDn);
+        KeyPair keyPair=DemoCryptoOperations.generate1024RsaKeyPair();
+        X509Certificate certifcate = DemoCryptoOperations.generateSelfSignedCertificate(keyPair, subjectDn);
 }
 }

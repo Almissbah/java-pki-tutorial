@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pki.tutorial.utils;
+package pki.tutorial.crypto.utils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,7 +17,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.Certificate;
-import pki.tutorial.interfaces.CryptoFileUtil;
 
 /**
  *
@@ -31,9 +30,6 @@ public class FileManager implements CryptoFileUtil{
         this.keyStoreType=CryptoFileUtil.KEYSTORE_TYPE_PKCS12;
         this.certType=CryptoFileUtil.CERT_TYPE_X509;
     }
-
-  
-
     public String getKeyStoreType() {
         return keyStoreType;
     }

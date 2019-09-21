@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pki.tutorial.interfaces;
+package pki.tutorial.crypto.cert;
 
 import java.io.FileNotFoundException;
 import java.security.PublicKey;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pki.tutorial.utils;
+package pki.tutorial.demo;
 
 import pki.tutorial.crypto.*;
 import java.io.UnsupportedEncodingException;
@@ -25,7 +25,7 @@ import javax.crypto.SecretKey;
  *
  * @author mohammed Almissbah
  */
-public class CryptoUtils {
+public class DemoCryptoOperations {
 
     public static final String ALG_RSA = "RSA";
     public static final String ALG_AES = "AES";
@@ -34,11 +34,11 @@ public class CryptoUtils {
     public static final String ENC_UTF_8 = "UTF-8";
 
     public static SecretKey generateAesKey(int keyBitSize) throws NoSuchAlgorithmException {
-     return CryptoOperations.generateSecretKey(keyBitSize, ALG_AES);
+     return KeyGenerator.generateSecretKey(keyBitSize, ALG_AES);
     }
 
     public static KeyPair generate1024RsaKeyPair() throws NoSuchAlgorithmException {
-        return CryptoOperations.generateKeyPair(1024, ALG_RSA);
+        return KeyGenerator.generateKeyPair(1024, ALG_RSA);
     }
 
     public static byte[] aesEncrypt(byte[] data, SecretKey key) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {

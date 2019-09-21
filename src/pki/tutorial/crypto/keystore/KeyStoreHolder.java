@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pki.tutorial.interfaces;
+package pki.tutorial.crypto.keystore;
 
 import java.io.FileNotFoundException;
 import java.security.KeyStoreException;
@@ -21,7 +21,6 @@ import java.util.List;
 public interface KeyStoreHolder {
 
     //Every class should have its own init method
-
     void init();
 
     Certificate getCertificate(String alias) throws KeyStoreException;
@@ -29,7 +28,7 @@ public interface KeyStoreHolder {
     PrivateKey getPrivateKey(String alias) throws NoSuchAlgorithmException, UnrecoverableEntryException, KeyStoreException;
 
     String getInfo();
-    
+
     List<String> getAliases() throws KeyStoreException;
 
     void printAliases() throws KeyStoreException;
@@ -38,11 +37,16 @@ public interface KeyStoreHolder {
 
     void importCertificate(String alias, Certificate crt) throws KeyStoreException;
 
-    void importCertificate(String alias, String path) throws KeyStoreException,FileNotFoundException,CertificateException ;
+    void importCertificate(String alias, String path) throws KeyStoreException, FileNotFoundException, CertificateException;
 
-    void importKeyPair(PrivateKey privateKey, String alias, Certificate[] chain) throws KeyStoreException;
-boolean isEntryExist(String alias) throws KeyStoreException;
-void deleteEntry(String alias) throws KeyStoreException ;
-boolean isCertificateExist(String alias) throws KeyStoreException ;
+    void importKeyPair(String alias,PrivateKey privateKey, Certificate[] chain) throws KeyStoreException;
+
+    boolean isEntryExist(String alias) throws KeyStoreException;
+
+    void deleteEntry(String alias) throws KeyStoreException;
+
+    boolean isCertificateExist(String alias) throws KeyStoreException;
+    boolean isHardToken();
+    void storeToDrive(String keyStoreOutputPath) throws Exception ;
     Certificate[] getPrivateKeyChain(String keyAlias) throws NoSuchAlgorithmException, UnrecoverableEntryException, KeyStoreException;
 }
