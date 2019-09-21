@@ -24,31 +24,9 @@ import java.security.cert.Certificate;
  */
 public class FileManager implements CryptoFileUtil{
 
-    private String keyStoreType;
-    private String certType;
-    public FileManager() {
-        this.keyStoreType=CryptoFileUtil.KEYSTORE_TYPE_PKCS12;
-        this.certType=CryptoFileUtil.CERT_TYPE_X509;
-    }
-    public String getKeyStoreType() {
-        return keyStoreType;
-    }
-
-    public void setKeyStoreType(String keyStoreType) {
-        this.keyStoreType = keyStoreType;
-    }
-
-    public String getCertType() {
-        return certType;
-    }
-
-    public void setCertType(String certType) {
-        this.certType = certType;
-    }
-
     @Override
     public  KeyStore loadKeyStore(String keyStorePath, String pass) throws FileNotFoundException, KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
-        KeyStore keyStore = KeyStore.getInstance(keyStoreType);
+        KeyStore keyStore = KeyStore.getInstance(CryptoFileUtil.KEYSTORE_TYPE_PKCS12);
         char[] keyStorePassword = pass.toCharArray();
         try (InputStream keyStoreData = new FileInputStream(keyStorePath)) {
             keyStore.load(keyStoreData, keyStorePassword);
@@ -58,7 +36,7 @@ public class FileManager implements CryptoFileUtil{
 
     @Override
     public  Certificate loadCertificate(String path) throws FileNotFoundException, CertificateException {
-        CertificateFactory certificateFactory = CertificateFactory.getInstance(certType);
+        CertificateFactory certificateFactory = CertificateFactory.getInstance(CryptoFileUtil.CERT_TYPE_X509);
         InputStream certificateInputStream = new FileInputStream(path);
         Certificate certificate = certificateFactory.generateCertificate(certificateInputStream);
         return certificate;
@@ -73,5 +51,23 @@ public class FileManager implements CryptoFileUtil{
     @Override
     public  void writeFile(byte[] data, String path) throws IOException {
         Files.write(Paths.get(path), data);
+    }
+
+      @Override
+    public  KeyStore loadKeyStore(String keyStorePath, String pass,String type) throws FileNotFoundException, KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
+        KeyStore keyStore = KeyStore.getInstance(type);
+        char[] keyStorePassword = pass.toCharArray();
+        try (InputStream keyStoreData = new FileInputStream(keyStorePath)) {
+            keyStore.load(keyStoreData, keyStorePassword);
+        }
+        return keyStore;
+    }
+
+    @Override
+    public  Certificate loadCertificate(String path,String type) throws FileNotFoundException, CertificateException {
+        CertificateFactory certificateFactory = CertificateFactory.getInstance(type);
+        InputStream certificateInputStream = new FileInputStream(path);
+        Certificate certificate = certificateFactory.generateCertificate(certificateInputStream);
+        return certificate;
     }
 }

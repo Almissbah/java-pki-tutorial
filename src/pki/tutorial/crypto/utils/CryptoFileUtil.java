@@ -23,6 +23,8 @@ public interface CryptoFileUtil {
     
     Certificate loadCertificate(String path)  throws FileNotFoundException, CertificateException ;
     KeyStore loadKeyStore(String keyStorePath,String KeySotrePassword) throws FileNotFoundException, KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException ;
+     Certificate loadCertificate(String path,String certType)  throws FileNotFoundException, CertificateException ;
+    KeyStore loadKeyStore(String keyStorePath,String KeySotrePassword,String keyStoreType) throws FileNotFoundException, KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException ;
     byte[] readFile(String inputFilePath) throws IOException;
     void writeFile(byte[] data, String outPutFilePath) throws IOException;
 }
