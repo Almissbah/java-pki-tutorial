@@ -25,6 +25,7 @@ This a simple implementation of JCE API.
   * **cert** - contains class for loading certificates and displaying its content.
   * **keystore** - contains classes needed to interact with soft and hardware keystores.
   * **util** - contains utils needed for reading files, certificates and keystores from hard drive.
+* **ui** - contains java frame interface for signing and verifying files.
 
 
 
