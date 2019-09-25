@@ -13,6 +13,9 @@ import java.security.UnrecoverableEntryException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.util.List;
+import pki.tutorial.crypto.keystore.hard.Bit4IdToken;
+import pki.tutorial.crypto.keystore.hard.St3Token;
+import pki.tutorial.crypto.keystore.soft.Pkcs12KeyStoreHolder;
 
 /**
  *
@@ -20,8 +23,12 @@ import java.util.List;
  */
 public interface KeyStoreHolder {
 
+    static final String KEYSTORE_TYPE_P12 = "P12";
+    static final String KEYSTORE_TYPE_ST3 = "St3Token";
+    static final String KEYSTORE_TYPE_BIT4ID = "Bit4idToken";
+
     //Every class should have its own init method
-    void init() throws Exception ;
+    void init(String keystorePassword) throws Exception;
 
     Certificate getCertificate(String alias) throws KeyStoreException;
 
@@ -39,15 +46,38 @@ public interface KeyStoreHolder {
 
     void importCertificate(String alias, String path) throws KeyStoreException, FileNotFoundException, CertificateException;
 
-    void importKeyPair(String alias,PrivateKey privateKey, Certificate[] chain) throws KeyStoreException;
+    void importKeyPair(String alias, PrivateKey privateKey, Certificate[] chain) throws KeyStoreException;
 
     boolean isEntryExist(String alias) throws KeyStoreException;
 
     void deleteEntry(String alias) throws KeyStoreException;
-    byte[] signData(String keyAlias,byte[] data)throws Exception;
-    boolean verifySignature(String keyAlias,byte[] data,byte[] signature)throws Exception;
+
+    byte[] signData(String keyAlias, byte[] data) throws Exception;
+
+    boolean verifySignature(String keyAlias, byte[] data, byte[] signature) throws Exception;
+
     boolean isCertificateExist(String alias) throws KeyStoreException;
+
     boolean isHardToken();
-    void storeToDrive(String keyStoreOutputPath) throws Exception ;
+
+    void storeToDrive(String keyStoreOutputPath) throws Exception;
+
     Certificate[] getPrivateKeyChain(String keyAlias) throws NoSuchAlgorithmException, UnrecoverableEntryException, KeyStoreException;
+
+    public class Factory {
+
+        public KeyStoreHolder getPkcs12KeyStore(String filePath) {
+            return new Pkcs12KeyStoreHolder(filePath);
+        }
+
+        public KeyStoreHolder getPkcs11KeyStore(String keyStoreType) {
+            if (keyStoreType.equals(KEYSTORE_TYPE_ST3)) {
+                return St3Token.getInstance();
+            } else {
+                return Bit4IdToken.getInstance();
+            }
+        }
+
+    }
+
 }

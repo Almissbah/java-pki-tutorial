@@ -20,16 +20,9 @@ import java.util.logging.Logger;
 import javax.swing.AbstractListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.ListModel;
-import javax.swing.SpinnerListModel;
-import javax.swing.SpinnerModel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.event.ChangeListener;
 import pki.tutorial.crypto.keystore.KeyStoreHolder;
-import pki.tutorial.crypto.keystore.hard.Bit4IdToken;
-import pki.tutorial.crypto.keystore.hard.St3Token;
-import pki.tutorial.crypto.keystore.soft.Pkcs12KeyStoreHolder;
 import pki.tutorial.crypto.utils.FileManager;
 
 /**
@@ -38,9 +31,6 @@ import pki.tutorial.crypto.utils.FileManager;
  */
 public class FileSignerUI extends javax.swing.JFrame {
 
-    private static final String KEYSTORE_TYPE_P12 = "P12";
-    private static final String KEYSTORE_TYPE_ST3 = "St3Token";
-    private static final String KEYSTORE_TYPE_BIT4ID = "Bit4idToken";
     private static final String KS_SELECTION_ERROR_MSG = "Please choose .p12 file !";
 
     private final String MSG_ERROR_NO_FILE_SELECTED = "Please select a file first !!";
@@ -78,17 +68,17 @@ public class FileSignerUI extends javax.swing.JFrame {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 // System.out.println("" + e.getItem().toString());
                 switch (e.getItem().toString()) {
-                    case KEYSTORE_TYPE_P12:
+                    case KeyStoreHolder.KEYSTORE_TYPE_P12:
                         ksBrowse.setEnabled(true);
-                        currentSelectedKeyStoreType = KEYSTORE_TYPE_P12;
+                        currentSelectedKeyStoreType = KeyStoreHolder.KEYSTORE_TYPE_P12;
                         break;
-                    case KEYSTORE_TYPE_ST3:
+                    case KeyStoreHolder.KEYSTORE_TYPE_ST3:
                         ksBrowse.setEnabled(false);
-                        currentSelectedKeyStoreType = KEYSTORE_TYPE_ST3;
+                        currentSelectedKeyStoreType = KeyStoreHolder.KEYSTORE_TYPE_ST3;
                         break;
-                    case KEYSTORE_TYPE_BIT4ID:
+                    case KeyStoreHolder.KEYSTORE_TYPE_BIT4ID:
                         ksBrowse.setEnabled(false);
-                        currentSelectedKeyStoreType = KEYSTORE_TYPE_BIT4ID;
+                        currentSelectedKeyStoreType = KeyStoreHolder.KEYSTORE_TYPE_BIT4ID;
                         break;
                 }
             }
@@ -361,34 +351,44 @@ public class FileSignerUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (ksPassword.isEnabled()) {
             buildKeyStore();
-            try {
-                mKeystore.init();
-                if (mKeystore.isInitialized()) {
-                    btnLogin.setText("Logout");
-                    ksPassword.setEnabled(false);
-                    loadKeyList();
-                }
-            } catch (Exception ex) {
-                showMessage(MSG_ERROR_PASSWORD);
-            }
+
         } else {
             resetApp();
         }
     }//GEN-LAST:event_btnLoginActionPerformed
     private void buildKeyStore() {
-        String ksPasswordText = ksPassword.getText();
-        switch (currentSelectedKeyStoreType) {
-            case KEYSTORE_TYPE_P12:
+        KeyStoreHolder.Factory factory = new KeyStoreHolder.Factory();
+
+        try {
+            if (currentSelectedKeyStoreType.equals(KeyStoreHolder.KEYSTORE_TYPE_P12)) {
                 if (mKeyStoreFile != null) {
-                    mKeystore = new Pkcs12KeyStoreHolder(mKeyStoreFile.getPath(), ksPasswordText);
+                    mKeystore = factory.getPkcs12KeyStore(mKeyStoreFile.getPath());
+                    System.err.println("is hard keystore " + mKeystore.isHardToken());
+                    initKeystore();
+                } else {
+                    showMessage(MSG_ERROR_NO_FILE_SELECTED);
                 }
-                break;
-            case KEYSTORE_TYPE_ST3:
-                mKeystore = St3Token.getInstance(ksPasswordText);
-                break;
-            case KEYSTORE_TYPE_BIT4ID:
-                mKeystore = Bit4IdToken.getInstance(ksPasswordText);
-                break;
+            } else {
+                mKeystore = factory.getPkcs11KeyStore(currentSelectedKeyStoreType);
+                System.err.println("is hard keystore " + mKeystore.isHardToken());
+                initKeystore();
+            }
+
+        } catch (Exception ex) {
+            showMessage(MSG_ERROR_PASSWORD);
+        }
+
+    }
+
+    private void initKeystore() throws Exception {
+        String ksPasswordText = ksPassword.getText();
+
+        mKeystore.init(ksPasswordText);
+         showMessage(ksPasswordText);
+        if (mKeystore.isInitialized()) {
+            btnLogin.setText("Logout");
+            ksPassword.setEnabled(false);
+            loadKeyList();
         }
     }
 

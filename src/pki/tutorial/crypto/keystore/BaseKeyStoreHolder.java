@@ -23,7 +23,6 @@ import java.util.Enumeration;
 import java.util.List;
 import pki.tutorial.crypto.CryptoOperations;
 import pki.tutorial.crypto.utils.CryptoFileUtil;
-import pki.tutorial.crypto.keystore.KeyStoreHolder;
 import pki.tutorial.crypto.utils.FileManager;
 
 /**
@@ -32,12 +31,11 @@ import pki.tutorial.crypto.utils.FileManager;
  */
 public abstract class BaseKeyStoreHolder implements KeyStoreHolder {
 
-    protected final String mKeyStorePassword;
+    protected String mKeyStorePassword;
     protected KeyStore mkeyStore;
     protected final CryptoFileUtil fileUtils;
 
-    public BaseKeyStoreHolder(String keyStorePass) {
-        this.mKeyStorePassword = keyStorePass;
+    public BaseKeyStoreHolder() {
         this.fileUtils = new FileManager();
     }
 

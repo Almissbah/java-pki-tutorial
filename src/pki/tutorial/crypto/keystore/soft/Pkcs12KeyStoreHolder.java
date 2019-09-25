@@ -7,8 +7,6 @@ package pki.tutorial.crypto.keystore.soft;
 
 import java.security.KeyStoreException;
 import java.security.cert.X509Certificate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import pki.tutorial.crypto.keystore.BaseKeyStoreHolder;
 
 /**
@@ -19,16 +17,19 @@ public class Pkcs12KeyStoreHolder extends BaseKeyStoreHolder{
     
     private final String mKeyStorePath;
 
-    public Pkcs12KeyStoreHolder(String mKeyStorePath, String keyStorePass) {
-        super(keyStorePass);
+    public Pkcs12KeyStoreHolder(String mKeyStorePath) {
+        super();
         this.mKeyStorePath = mKeyStorePath;
     }
    
     
+    
     @Override
-    public void init() throws Exception {
-     
+    public void init(String mKeyStorePassword) throws Exception {
+         System.err.println("init Pkcs11KeyStoreHolder");
+            this.mKeyStorePassword=mKeyStorePassword;
             mkeyStore= fileUtils.loadKeyStore(mKeyStorePath, mKeyStorePassword);
+           
         
     }
     
@@ -40,6 +41,6 @@ public class Pkcs12KeyStoreHolder extends BaseKeyStoreHolder{
 
     @Override
     public boolean isHardToken() {
-        return false;   }
+        return false;}
       
 }

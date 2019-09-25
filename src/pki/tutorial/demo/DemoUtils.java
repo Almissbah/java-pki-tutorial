@@ -107,10 +107,10 @@ public class DemoUtils {
     }
 
     public static void testKeyStore() throws KeyStoreException, IOException, FileNotFoundException, NoSuchAlgorithmException, CertificateException, Exception {
-        KeyStoreHolder keyStoreHolder;
-        keyStoreHolder = new Pkcs12KeyStoreHolder(KEYSTORE_PATH, KEYSTORE_PASS);
+        KeyStoreHolder keyStoreHolder=new KeyStoreHolder.Factory().getPkcs12KeyStore(KEYSTORE_PATH);
+        //keyStoreHolder = new Pkcs12KeyStoreHolder(KEYSTORE_PATH);
         // keyStoreHolder = St3Token.getInstance("12345678");
-                keyStoreHolder.init();
+                keyStoreHolder.init(KEYSTORE_PASS);
         
         if(keyStoreHolder.isInitialized()){
         List<String> aliasList = keyStoreHolder.getAliases();

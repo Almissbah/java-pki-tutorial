@@ -5,7 +5,6 @@
  */
 package pki.tutorial.crypto.cert;
 
-import pki.tutorial.crypto.cert.CertficateHolder;
 import java.io.FileNotFoundException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;

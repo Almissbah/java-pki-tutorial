@@ -9,19 +9,21 @@ package pki.tutorial.crypto.keystore.hard;
  *
  * @author mohamed
  */
-public class Bit4IdToken extends Pkcs11KeyStoreHolder{
-public static Bit4IdToken INSTANCE;
-public static String TOKEN_LIB="C:\\java-pki-tutorial\\libs\\bit4id\\bit4npki.dll";
-public static String TOKEN_NAME="St3Token";
-   private Bit4IdToken(String tokenPIN) {
-        super(TOKEN_NAME,TOKEN_LIB,tokenPIN);
+public class Bit4IdToken extends Pkcs11KeyStoreHolder {
+
+    public static Bit4IdToken INSTANCE;
+    public static String TOKEN_LIB = "C:\\java-pki-tutorial\\libs\\bit4id\\bit4npki.dll";
+    public static String TOKEN_NAME = "Bit4IdToken";
+
+    private Bit4IdToken() {
+        super(TOKEN_NAME, TOKEN_LIB);
     }
- public static Bit4IdToken getInstance(String keyStorePassword) {
+
+    public static Bit4IdToken getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new Bit4IdToken(keyStorePassword);
+            INSTANCE = new Bit4IdToken();
         }
         return INSTANCE;
     }
-    
-    
+
 }
