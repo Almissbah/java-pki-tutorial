@@ -22,6 +22,9 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
+import javax.xml.namespace.QName;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.cesecore.certificates.crl.RevokedCertInfo;
 
 import org.cesecore.certificates.util.AlgorithmConstants;
@@ -55,7 +58,76 @@ import org.ejbca.core.protocol.ws.common.KeyStoreHelper;
 public class EjbcaWebService {
 
     private static EjbcaWS ejbcaraws;
+   Properties prop;
+    public nctrEJBCAwsRA(String ejbcaIPorAddress, String ksPath,
+            String password, String workingDIRpath) throws Exception {
 
+        Security.addProvider(new BouncyCastleProvider());
+
+        String urlstr = "https://" + ejbcaIPorAddress
+                + ":8443/ejbca/ejbcaws/ejbcaws?wsdl";
+        ignoreSSLhostname(ejbcaIPorAddress);
+        System.out.println("Contacting webservice at " + urlstr);
+
+        System.setProperty("javax.net.ssl.trustStore", ksPath);
+        System.setProperty("javax.net.ssl.trustStorePassword", password);
+
+        System.setProperty("javax.net.ssl.keyStore", ksPath);
+        System.setProperty("javax.net.ssl.keyStorePassword", password);
+
+        QName qname = new QName("http://ws.protocol.core.ejbca.org/",
+                "EjbcaWSService");
+        EjbcaWSService service = new EjbcaWSService(new URL(urlstr), qname);
+        ejbcaraws = service.getEjbcaWSPort();
+    }
+
+    public nctrEJBCAwsRA() throws Exception {
+
+        String ejbcaIPorAddress = "192.168.56.57",ksPath="c:\\p12\\ra-ws-admin.jks", TrustKsPath = "c:\\p12\\ejbcaws.jks", ksPathPassword = "toortoor"
+                , TrustKsPathPassword = "toortoor";
+        workingDIRpath = "c:\\p12\\";
+        
+        
+                  prop = SettingManager.Load_DB_config_File();
+            ejbcaIPorAddress=prop.getProperty("ejbca_hostname");
+             ksPath=prop.getProperty("EjbcaKeyStoreLocation");
+                        ksPathPassword=prop.getProperty("EjbcaKeyStorePassword");
+                   TrustKsPath=prop.getProperty("EjbcaTrustStoreLocation");
+                        TrustKsPathPassword=prop.getProperty("EjbcaTrustStorePassword");
+                             default_token_password=prop.getProperty("default_token_password");
+                         
+        ignoreSSLhostname(ejbcaIPorAddress);
+        Security.addProvider(new BouncyCastleProvider());
+
+        String urlstr = "https://" + ejbcaIPorAddress
+                + ":8443/ejbca/ejbcaws/ejbcaws?wsdl";
+
+        System.out.println("Contacting webservice at " + urlstr);
+
+        System.setProperty("javax.net.ssl.trustStore", TrustKsPath);
+        System.setProperty("javax.net.ssl.trustStorePassword", TrustKsPathPassword);
+        System.setProperty("javax.net.ssl.keyStore", ksPath);
+        System.setProperty("javax.net.ssl.keyStorePassword", ksPathPassword);
+
+        QName qname = new QName("http://ws.protocol.core.ejbca.org/",
+                "EjbcaWSService");
+        EjbcaWSService service = new EjbcaWSService(new URL(urlstr), qname);
+        ejbcaraws = service.getEjbcaWSPort();
+    }
+
+    public static void ignoreSSLhostname(String hostname) {
+        javax.net.ssl.HttpsURLConnection
+                .setDefaultHostnameVerifier(new javax.net.ssl.HostnameVerifier() {
+
+                    public boolean verify(String hostname,
+                            javax.net.ssl.SSLSession sslSession) {
+                        if (hostname.equals(hostname)) {
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+    }
     public static boolean userSearch(String username) {
         System.out.print("\nsearching for user " + username + "...\n");
         UserMatch usermatch = new UserMatch();
