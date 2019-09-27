@@ -59,6 +59,7 @@ public class EjbcaWebService {
 
     private static EjbcaWS ejbcaraws;
    Properties prop;
+    private String workingDIRpath;
     public nctrEJBCAwsRA(String ejbcaIPorAddress, String ksPath,
             String password, String workingDIRpath) throws Exception {
 
@@ -528,6 +529,12 @@ public class EjbcaWebService {
         return "else";
     }
 
+    public static String USER_STATUS_NOT_FOUND="not found";
+        public static String USER_STATUS_NEW="NEW";
+            public static String USER_STATUS_GENERATED="GENERATED";
+                public static String USER_STATUS_REVOKED="REVOKED";
+        
+        
     public String checkUSER(String username) {
         String status = "unknown";
         UserMatch usermatch = new UserMatch();
@@ -539,21 +546,8 @@ public class EjbcaWebService {
         List<UserDataVOWS> userdatas = null;
         try {
             userdatas = ejbcaraws.findUser(usermatch);
-        } catch (AuthorizationDeniedException_Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (EjbcaException_Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (EndEntityProfileNotFoundException_Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalQueryException_Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        if (userdatas.size() > 0) {
+            
+              if (userdatas.size() > 0) {
             switch (userdatas.get(0).getStatus()) {
                 case 10:
                     System.out.print("\nuser " + username + "  status= NEW");
@@ -571,15 +565,21 @@ public class EjbcaWebService {
                 default:
                     break;
             }
-            System.out.print("..code(" + userdatas.get(0).getStatus() + ")\n");
             return status;
         } else {
             System.out.print("\nuser " + username + " does not exists !!");
         }
+              
+        } catch (AuthorizationDeniedException_Exception | EjbcaException_Exception | EndEntityProfileNotFoundException_Exception | IllegalQueryException_Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+      
         return status;
     }
 
-    public String getUSERlastCert(String username) throws IOException,
+    public String getUserlastCertAsAfile(String username) throws IOException,
             AuthorizationDeniedException_Exception, EjbcaException_Exception,
             CertificateException {
 
@@ -604,7 +604,7 @@ public class EjbcaWebService {
         // CertificateResponse(CertificateHelper.RESPONSETYPE_CERTIFICATE ,
         // certs.get(0).getRawCertificateData());
         // System.out.print(a.getCertificate());
-        return "created";
+        return filePath;
     }
 
     public X509Certificate printX509cert(String username) {
@@ -621,54 +621,41 @@ public class EjbcaWebService {
             CertResponse = new CertificateResponse(
                     CertificateHelper.RESPONSETYPE_CERTIFICATE, userlastcert);
             usercert = CertResponse.getCertificate();
-            System.out.print(usercert);
+          
+        return usercert;
         } catch (AuthorizationDeniedException_Exception
-                | EjbcaException_Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+                | EjbcaException_Exception | CertificateException e) {
+          
+        return usercert;
         }
 
-        return usercert;
     }
 
     public List<NameAndId> getEEprofiles() {
         try {
             return ejbcaraws.getAuthorizedEndEntityProfiles();
-        } catch (AuthorizationDeniedException_Exception e) {
+        } catch (AuthorizationDeniedException_Exception | EjbcaException_Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (EjbcaException_Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+                return null;
         }
-        return null;
+    
     }
 
     public List<NameAndId> getCertProfiles(int i) {
         try {
             return ejbcaraws.getAvailableCertificateProfiles(i);
-        } catch (AuthorizationDeniedException_Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (EjbcaException_Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (AuthorizationDeniedException_Exception | EjbcaException_Exception e) {
+      return null;
         }
-        return null;
     }
 
     public List<NameAndId> getCAs() {
         try {
             return ejbcaraws.getAvailableCAs();
 
-        } catch (AuthorizationDeniedException_Exception | EjbcaException_Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (AuthorizationDeniedException_Exception | EjbcaException_Exception e) { 
+             return null;
         }
-        // TODO Auto-generated catch block
-        return null;
+      
     }
 }

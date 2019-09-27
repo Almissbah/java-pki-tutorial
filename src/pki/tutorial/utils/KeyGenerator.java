@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pki.tutorial.crypto;
+package pki.tutorial.utils;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;

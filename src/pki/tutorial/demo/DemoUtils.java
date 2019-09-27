@@ -5,7 +5,7 @@
  */
 package pki.tutorial.demo;
 
-import pki.tutorial.crypto.utils.FileManager;
+import pki.tutorial.utils.FileManager;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -25,13 +25,13 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
-import pki.tutorial.crypto.keystore.hard.Bit4IdToken;
-import pki.tutorial.crypto.cert.SoftCertificateHolder;
-import pki.tutorial.crypto.CryptoOperations;
-import pki.tutorial.crypto.KeyGenerator;
-import pki.tutorial.crypto.keystore.soft.Pkcs12KeyStoreHolder;
-import pki.tutorial.crypto.keystore.hard.St3Token;
-import pki.tutorial.crypto.keystore.KeyStoreHolder;
+import pki.tutorial.keystore.hard.Bit4IdToken;
+import pki.tutorial.certificate.SoftCertificateHolder;
+import pki.tutorial.utils.CryptoOperations;
+import pki.tutorial.utils.KeyGenerator;
+import pki.tutorial.keystore.soft.Pkcs12KeyStoreHolder;
+import pki.tutorial.keystore.hard.St3Token;
+import pki.tutorial.keystore.KeyStoreHolder;
 
 /**
  *

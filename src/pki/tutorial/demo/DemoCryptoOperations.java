@@ -5,7 +5,8 @@
  */
 package pki.tutorial.demo;
 
-import pki.tutorial.crypto.*;
+import pki.tutorial.utils.CryptoOperations;
+import pki.tutorial.utils.KeyGenerator;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -20,11 +21,11 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
-import static pki.tutorial.crypto.CryptoOperations.ALG_AES;
-import static pki.tutorial.crypto.CryptoOperations.ALG_RSA;
-import static pki.tutorial.crypto.CryptoOperations.ALG_SHA256;
-import static pki.tutorial.crypto.CryptoOperations.ALG_SHA256_WITH_RSA;
-import static pki.tutorial.crypto.CryptoOperations.ENC_UTF_8;
+import static pki.tutorial.utils.CryptoOperations.ALG_AES;
+import static pki.tutorial.utils.CryptoOperations.ALG_RSA;
+import static pki.tutorial.utils.CryptoOperations.ALG_SHA256;
+import static pki.tutorial.utils.CryptoOperations.ALG_SHA256_WITH_RSA;
+import static pki.tutorial.utils.CryptoOperations.ENC_UTF_8;
 
 /**
  *

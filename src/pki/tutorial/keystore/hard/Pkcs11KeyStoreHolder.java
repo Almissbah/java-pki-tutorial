@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pki.tutorial.crypto.keystore.hard;
+package pki.tutorial.keystore.hard;
 
 import java.io.ByteArrayInputStream;
 import java.security.KeyStore;
 import java.security.Security;
-import pki.tutorial.crypto.keystore.BaseKeyStoreHolder;
+import pki.tutorial.keystore.BaseKeyStoreHolder;
 import sun.security.pkcs11.SunPKCS11;
 
 /**

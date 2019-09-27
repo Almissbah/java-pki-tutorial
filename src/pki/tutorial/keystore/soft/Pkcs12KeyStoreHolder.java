@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pki.tutorial.crypto.keystore.soft;
+package pki.tutorial.keystore.soft;
 
 import java.security.KeyStoreException;
 import java.security.cert.X509Certificate;
-import pki.tutorial.crypto.keystore.BaseKeyStoreHolder;
+import pki.tutorial.keystore.BaseKeyStoreHolder;
 
 /**
  *

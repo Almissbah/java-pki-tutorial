@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pki.tutorial.crypto.keystore;
+package pki.tutorial.keystore;
 
 import java.io.FileNotFoundException;
 import java.security.KeyStoreException;
@@ -13,9 +13,9 @@ import java.security.UnrecoverableEntryException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.util.List;
-import pki.tutorial.crypto.keystore.hard.Bit4IdToken;
-import pki.tutorial.crypto.keystore.hard.St3Token;
-import pki.tutorial.crypto.keystore.soft.Pkcs12KeyStoreHolder;
+import pki.tutorial.keystore.hard.Bit4IdToken;
+import pki.tutorial.keystore.hard.St3Token;
+import pki.tutorial.keystore.soft.Pkcs12KeyStoreHolder;
 
 /**
  *
@@ -64,20 +64,6 @@ public interface KeyStoreHolder {
 
     Certificate[] getPrivateKeyChain(String keyAlias) throws NoSuchAlgorithmException, UnrecoverableEntryException, KeyStoreException;
 
-    public class Factory {
-
-        public KeyStoreHolder getPkcs12KeyStore(String filePath) {
-            return new Pkcs12KeyStoreHolder(filePath);
-        }
-
-        public KeyStoreHolder getPkcs11KeyStore(String keyStoreType) {
-            if (keyStoreType.equals(KEYSTORE_TYPE_ST3)) {
-                return St3Token.getInstance();
-            } else {
-                return Bit4IdToken.getInstance();
-            }
-        }
-
-    }
+   
 
 }

@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pki.tutorial.crypto.keystore;
+package pki.tutorial.keystore;
 
+import pki.tutorial.keystore.KeyStoreHolder;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -21,9 +22,9 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import pki.tutorial.crypto.CryptoOperations;
-import pki.tutorial.crypto.utils.CryptoFileUtil;
-import pki.tutorial.crypto.utils.FileManager;
+import pki.tutorial.utils.CryptoOperations;
+import pki.tutorial.utils.FileUtils;
+import pki.tutorial.utils.FileManager;
 
 /**
  *
@@ -33,7 +34,7 @@ public abstract class BaseKeyStoreHolder implements KeyStoreHolder {
 
     protected String mKeyStorePassword;
     protected KeyStore mkeyStore;
-    protected final CryptoFileUtil fileUtils;
+    protected final FileUtils fileUtils;
 
     public BaseKeyStoreHolder() {
         this.fileUtils = new FileManager();

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pki.tutorial.crypto.utils;
+package pki.tutorial.utils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import java.security.cert.CertificateException;
  *
  * @author mohamed
  */
-public interface CryptoFileUtil {
+public interface FileUtils {
     public static final String KEYSTORE_TYPE_PKCS12 = "PKCS12";
     public static final String CERT_TYPE_X509 = "X.509";
     

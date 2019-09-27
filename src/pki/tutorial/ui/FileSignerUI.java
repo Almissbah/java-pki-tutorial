@@ -6,7 +6,6 @@
 package pki.tutorial.ui;
 
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,8 +21,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import pki.tutorial.crypto.keystore.KeyStoreHolder;
-import pki.tutorial.crypto.utils.FileManager;
+import pki.tutorial.keystore.KeyStoreHolder;
+import pki.tutorial.keystore.KeyStoreHolderFactory;
+import pki.tutorial.utils.FileManager;
 
 /**
  *
@@ -357,20 +357,18 @@ public class FileSignerUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnLoginActionPerformed
     private void buildKeyStore() {
-        KeyStoreHolder.Factory factory = new KeyStoreHolder.Factory();
+        KeyStoreHolderFactory factory = new KeyStoreHolderFactory();
 
         try {
             if (currentSelectedKeyStoreType.equals(KeyStoreHolder.KEYSTORE_TYPE_P12)) {
                 if (mKeyStoreFile != null) {
                     mKeystore = factory.getPkcs12KeyStore(mKeyStoreFile.getPath());
-                    System.err.println("is hard keystore " + mKeystore.isHardToken());
                     initKeystore();
                 } else {
                     showMessage(MSG_ERROR_NO_FILE_SELECTED);
                 }
             } else {
                 mKeystore = factory.getPkcs11KeyStore(currentSelectedKeyStoreType);
-                System.err.println("is hard keystore " + mKeystore.isHardToken());
                 initKeystore();
             }
 

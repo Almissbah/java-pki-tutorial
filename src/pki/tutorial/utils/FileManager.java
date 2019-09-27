@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package pki.tutorial.crypto.utils;
+package pki.tutorial.utils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -22,11 +22,11 @@ import java.security.cert.Certificate;
  *
  * @author mohamed
  */
-public class FileManager implements CryptoFileUtil{
+public class FileManager implements FileUtils{
 
     @Override
     public  KeyStore loadKeyStore(String keyStorePath, String pass) throws FileNotFoundException, KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
-        KeyStore keyStore = KeyStore.getInstance(CryptoFileUtil.KEYSTORE_TYPE_PKCS12);
+        KeyStore keyStore = KeyStore.getInstance(FileUtils.KEYSTORE_TYPE_PKCS12);
         char[] keyStorePassword = pass.toCharArray();
         try (InputStream keyStoreData = new FileInputStream(keyStorePath)) {
             keyStore.load(keyStoreData, keyStorePassword);
@@ -36,7 +36,7 @@ public class FileManager implements CryptoFileUtil{
 
     @Override
     public  Certificate loadCertificate(String path) throws FileNotFoundException, CertificateException {
-        CertificateFactory certificateFactory = CertificateFactory.getInstance(CryptoFileUtil.CERT_TYPE_X509);
+        CertificateFactory certificateFactory = CertificateFactory.getInstance(FileUtils.CERT_TYPE_X509);
         InputStream certificateInputStream = new FileInputStream(path);
         Certificate certificate = certificateFactory.generateCertificate(certificateInputStream);
         return certificate;
