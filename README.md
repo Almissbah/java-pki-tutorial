@@ -12,6 +12,7 @@ This a simple implementation of JCE API.
 4. Importing certificates into keystores.
 5. Deleting keys and certificates from keystores.
 6. Sign and verify signature for files.
+7. Ejbca web service interface.
 
 ## Supported keystores
 1. (*.P12) keystores.
@@ -19,13 +20,14 @@ This a simple implementation of JCE API.
 3. Bit4id crypto token.
 
 ### App Packages:
-* **crypto** - contains :
+  * **core** - contains :
   * CrytoOperations class - for encryption, decryption, hash and digital signature.
-  * KeyGenerator class - for generateing symmetric and asymmetric keys.
-  * **cert** - contains class for loading certificates and displaying its content.
+  * KeyFactory class - for generateing symmetric and asymmetric keys.
+  * **certificate** - contains class for loading certificates and displaying its content.
   * **keystore** - contains classes needed to interact with soft and hardware keystores.
+  * **ejbca** - contains Ejbca interface for issuing and managing certificates.
   * **util** - contains utils needed for reading files, certificates and keystores from hard drive.
-* **ui** - contains java frame interface for signing and verifying files.
+  * **ui** - contains java frame interface for signing and verifying files.
 
 
 
