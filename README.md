@@ -21,8 +21,8 @@ This a simple implementation of JCE API.
 
 ### App Packages:
   * **core** - contains :
-  * CrytoOperations class - for encryption, decryption, hash and digital signature.
-  * KeyFactory class - for generateing symmetric and asymmetric keys.
+    * CrytoOperations class - for encryption, decryption, hash and digital signature.
+    * KeyFactory class - for generateing symmetric and asymmetric keys.
   * **certificate** - contains class for loading certificates and displaying its content.
   * **keystore** - contains classes needed to interact with soft and hardware keystores.
   * **ejbca** - contains Ejbca interface for issuing and managing certificates.
