@@ -16,29 +16,41 @@ import java.security.cert.CertificateException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.security.cert.X509Certificate; 
+import pki.tutorial.utils.FileManager;
+import pki.tutorial.utils.FileUtils;
 /**
  *
  * @author mohammed Almissbah 
  */
 public class SoftCertificateHolder implements CertficateHolder{
 
-    private final String mCertificatePath;
+    private String mCertificatePath;
     private Certificate mCertificate;
     private final CertificateFactory certificateFactory;
+    private final FileUtils fileUtils;
     public SoftCertificateHolder(String path) {
         this.mCertificatePath = path;
         certificateFactory=new CertificateFactory();
+        this.fileUtils=new FileManager();
     }
+
+    public SoftCertificateHolder(Certificate mCertificate) {
+        this.mCertificate = mCertificate;
+        this.certificateFactory=new CertificateFactory();
+        this.fileUtils=new FileManager();
+    }
+    
 
     public SoftCertificateHolder(String mCertificatePath, CertificateFactory certificateFactory) {
         this.mCertificatePath = mCertificatePath;
         this.certificateFactory = certificateFactory;
+        this.fileUtils=new FileManager();
     }
     
 
     @Override
     public void init() throws FileNotFoundException, CertificateException {
-        mCertificate = certificateFactory.createCertificateFromFile(mCertificatePath);
+       if(mCertificate==null) mCertificate = certificateFactory.createCertificateFromFile(mCertificatePath);
     }
 
     @Override
@@ -71,4 +83,10 @@ public class SoftCertificateHolder implements CertficateHolder{
         }
         return isVerified;
   }
+
+    @Override
+    public void store(String path) throws Exception {
+       byte[] crtBytes= mCertificate.getEncoded();
+       fileUtils.writeFile(crtBytes, path);
+    }
 }

@@ -22,7 +22,7 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import org.bouncycastle.jce.X509Principal;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
-import pki.tutorial.utils.AppConsts; 
+import pki.tutorial.core.AppConsts; 
 
 /**
  *

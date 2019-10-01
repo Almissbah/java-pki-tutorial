@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import pki.tutorial.certificate.CertificateFactory;
-import static pki.tutorial.utils.AppConsts.ALG_SHA256_WITH_RSA;
-import pki.tutorial.utils.CryptoOperations; 
+import static pki.tutorial.core.AppConsts.ALG_SHA256_WITH_RSA;
+import pki.tutorial.core.CryptoOperations; 
 
 /**
  *

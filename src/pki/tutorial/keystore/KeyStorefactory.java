@@ -13,7 +13,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-import static pki.tutorial.utils.AppConsts.KEYSTORE_TYPE_PKCS12;
+import static pki.tutorial.core.AppConsts.KEYSTORE_TYPE_PKCS12;
 
 /**
  *

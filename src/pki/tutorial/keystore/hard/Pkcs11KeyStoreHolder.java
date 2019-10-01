@@ -31,21 +31,28 @@ public abstract class Pkcs11KeyStoreHolder extends BaseKeyStoreHolder {
     public void init(String keystorePassword) throws Exception {
 
         this.mKeyStorePassword = keystorePassword;
-        buildKeyStore(); 
+        buildKeyStore();
     }
 
     private void buildKeyStore() throws Exception {
 
-        String pkcs11ConfigSettings = getPkcs11Config(tokenName, libPath);
-        byte[] pkcs11ConfigBytes = pkcs11ConfigSettings.getBytes();
-        final ByteArrayInputStream confStream = new ByteArrayInputStream(pkcs11ConfigBytes);
-
-       // instantiate the provider with your config
-        SunPKCS11 pkcs11Provider = new SunPKCS11(confStream);
+        // instantiate the provider with your config
+        SunPKCS11 pkcs11Provider = getPkcs11Provider();
         Security.addProvider(pkcs11Provider);
         mkeyStore = KeyStore.getInstance("PKCS11", pkcs11Provider);
         mkeyStore.load(null, this.mKeyStorePassword.toCharArray());
 
+    }
+
+    private SunPKCS11 getPkcs11Provider() {
+        String pkcs11ConfigSettings = getPkcs11Config(tokenName, libPath);
+        byte[] pkcs11ConfigBytes = pkcs11ConfigSettings.getBytes();
+        final ByteArrayInputStream confStream = new ByteArrayInputStream(pkcs11ConfigBytes);
+        return new SunPKCS11(confStream);
+    }
+    
+     private String getPkcs11Config(String tokenName, String libPath) {
+        return "name = " + tokenName + "\n" + "library = " + libPath;
     }
 
     @Override
@@ -53,7 +60,5 @@ public abstract class Pkcs11KeyStoreHolder extends BaseKeyStoreHolder {
         return true;
     }
 
-    private String getPkcs11Config(String tokenName,String libPath){
-        return "name = " + tokenName + "\n" + "library = " + libPath;
-    }
+   
 }

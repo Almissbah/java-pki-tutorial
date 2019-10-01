@@ -17,4 +17,5 @@ public interface CertficateHolder {
     String getInfo();
     PublicKey getPublicKey();
     boolean verifySignerKey(PublicKey key);
+    void store(String path)throws Exception;
 }

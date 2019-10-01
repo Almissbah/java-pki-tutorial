@@ -54,8 +54,8 @@ public class FileSignerUI extends javax.swing.JFrame {
     private File mFile;
     private KeyStoreHolder mKeystore;
     private KeyStoreHolderType currentSelectedKeyStoreType;
-    private KeyStoreHolderFactory keyStoreHolderFactory;
-    private CertificateFactory certificateFactory;
+    private final KeyStoreHolderFactory keyStoreHolderFactory;
+    private final CertificateFactory certificateFactory;
 
     /**
      * Creates new form MainUI
@@ -551,10 +551,8 @@ public class FileSignerUI extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FileSignerUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        java.awt.EventQueue.invokeLater(() -> {
+            
+             java.awt.EventQueue.invokeLater(() -> {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 new FileSignerUI().setVisible(true);
@@ -563,6 +561,10 @@ public class FileSignerUI extends javax.swing.JFrame {
 
             }
         });
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(FileSignerUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+       
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

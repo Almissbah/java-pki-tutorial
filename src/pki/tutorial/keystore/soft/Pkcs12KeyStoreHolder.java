@@ -13,34 +13,37 @@ import pki.tutorial.keystore.BaseKeyStoreHolder;
  *
  * @author mohamed
  */
-public class Pkcs12KeyStoreHolder extends BaseKeyStoreHolder{
-    
-    private final String mKeyStorePath;
+public class Pkcs12KeyStoreHolder extends BaseKeyStoreHolder {
+
+    private String mKeyStorePath;
+
+    public Pkcs12KeyStoreHolder() {
+         super();
+    }
 
     public Pkcs12KeyStoreHolder(String mKeyStorePath) {
         super();
         this.mKeyStorePath = mKeyStorePath;
     }
-   
-    
-    
-    @Override
-    public void init(String mKeyStorePassword) throws Exception {
-         System.err.println("init Pkcs11KeyStoreHolder");
-            this.mKeyStorePassword=mKeyStorePassword;
-            mkeyStore= keyStoreFactory.createKeyStoreFromFile(mKeyStorePath, mKeyStorePassword);
-           
-        
-    }
-    
 
     @Override
-    public X509Certificate getCertificate(String alias) throws KeyStoreException{
-   return (X509Certificate) mkeyStore.getCertificate(alias);
+    public void init(String mKeyStorePassword) throws Exception {
+        this.mKeyStorePassword = mKeyStorePassword;
+        if (mKeyStorePath != null) {
+            mkeyStore = keyStoreFactory.createKeyStoreFromFile(mKeyStorePath, mKeyStorePassword);
+        } else {
+            mkeyStore = keyStoreFactory.createNewKeyStore();
+        }
+   }
+
+    @Override
+    public X509Certificate getCertificate(String alias) throws KeyStoreException {
+        return (X509Certificate) mkeyStore.getCertificate(alias);
     }
 
     @Override
     public boolean isHardToken() {
-        return false;}
-      
+        return false;
+    }
+
 }

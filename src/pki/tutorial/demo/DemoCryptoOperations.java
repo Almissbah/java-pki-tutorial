@@ -5,8 +5,8 @@
  */
 package pki.tutorial.demo;
 
-import pki.tutorial.utils.CryptoOperations;
-import pki.tutorial.utils.KeyFactory;
+import pki.tutorial.core.CryptoOperations;
+import pki.tutorial.core.KeyFactory;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -22,7 +22,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey; 
 import pki.tutorial.certificate.CertificateFactory;
-import static pki.tutorial.utils.AppConsts.*;
+import static pki.tutorial.core.AppConsts.*;
 /**
  *
  * @author mohammed Almissbah
