@@ -15,8 +15,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SignatureException;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.X509Certificate;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateEncodingException; 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -69,7 +69,7 @@ public class DemoCryptoOperations {
         return CryptoOperations.verifySignature(data, pubKey, digitalSignature, ALG_SHA256_WITH_RSA);
     }
 
-    public static X509Certificate generateSelfSignedCertificate(KeyPair keyPair,String subjectDn) throws CertificateEncodingException, IllegalStateException, NoSuchAlgorithmException, SignatureException, InvalidKeyException {
+    public static  Certificate generateSelfSignedCertificate(KeyPair keyPair,String subjectDn) throws CertificateEncodingException, IllegalStateException, NoSuchAlgorithmException, SignatureException, InvalidKeyException {
        return new CertificateFactory().createSelfSignedCertificate(subjectDn, subjectDn, keyPair, ALG_SHA256_WITH_RSA);
     }
 

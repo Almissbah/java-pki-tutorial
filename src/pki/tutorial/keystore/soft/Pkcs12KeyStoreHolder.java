@@ -30,9 +30,9 @@ public class Pkcs12KeyStoreHolder extends BaseKeyStoreHolder {
     public void init(String mKeyStorePassword) throws Exception {
         this.mKeyStorePassword = mKeyStorePassword;
         if (mKeyStorePath != null) {
-            mkeyStore = keyStoreFactory.createKeyStoreFromFile(mKeyStorePath, mKeyStorePassword);
+            mkeyStore = keyStoreFactory.createPkcs12KeyStoreFromFile(mKeyStorePath, mKeyStorePassword);
         } else {
-            mkeyStore = keyStoreFactory.createNewKeyStore();
+            mkeyStore = keyStoreFactory.createNewPkcs12KeyStore();
         }
    }
 

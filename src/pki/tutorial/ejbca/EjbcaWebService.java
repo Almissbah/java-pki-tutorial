@@ -16,9 +16,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Security;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-
+import java.security.cert.CertificateException; 
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 import java.util.List;
@@ -118,16 +116,13 @@ public class EjbcaWebService {
 
     public static void ignoreSSLhostname(String hostname) {
         javax.net.ssl.HttpsURLConnection
-                .setDefaultHostnameVerifier(new javax.net.ssl.HostnameVerifier() {
-
-                    public boolean verify(String hostname,
-                            javax.net.ssl.SSLSession sslSession) {
-                        if (hostname.equals(hostname)) {
-                            return true;
-                        }
-                        return false;
-                    }
-                });
+                .setDefaultHostnameVerifier((String hostname1, 
+                        javax.net.ssl.SSLSession sslSession) -> {
+            if (hostname1.equals(hostname1)) {
+                return true;
+            }
+            return false;
+        });
     }
     public static boolean userSearch(String username) {
         System.out.print("\nsearching for user " + username + "...\n");

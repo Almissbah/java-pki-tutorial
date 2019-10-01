@@ -499,7 +499,7 @@ public class FileSignerUI extends javax.swing.JFrame {
             Certificate crt;
      
             try {
-                crt = certificateFactory.createCertificateFromFile(fileToImport.getPath());
+                crt = certificateFactory.createX509CertificateFromFile(fileToImport.getPath());
 
                 mKeystore.importCertificate(((X509Certificate) crt).getSubjectDN().toString(), ((Certificate) crt));
                 loadKeyList();

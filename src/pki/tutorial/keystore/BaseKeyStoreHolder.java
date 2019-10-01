@@ -4,11 +4,9 @@
  * and open the template in the editor.
  */
 package pki.tutorial.keystore;
-
-import pki.tutorial.keystore.KeyStoreHolder;
+ 
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.FileOutputStream; 
 import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -99,7 +97,7 @@ public abstract class BaseKeyStoreHolder implements KeyStoreHolder {
 
     @Override
     public void importCertificate(String alias, String path) throws KeyStoreException, FileNotFoundException, CertificateException {
-        mkeyStore.setCertificateEntry(alias, certificateFactory.createCertificateFromFile(path));
+        mkeyStore.setCertificateEntry(alias, certificateFactory.createX509CertificateFromFile(path));
     }
 
     @Override

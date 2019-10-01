@@ -17,8 +17,7 @@ import java.security.PublicKey;
 import java.security.SignatureException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
+import java.security.cert.CertificateException; 
 import java.util.Date;
 import org.bouncycastle.jce.X509Principal;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
@@ -31,7 +30,7 @@ import pki.tutorial.core.AppConsts;
 public class CertificateFactory {
     
     
-   public  X509Certificate createSignedCertificate(String issuerDn,String subjectDn,PublicKey certificatePublicKey,PrivateKey caSignerKey,String signingAlgrithm) throws CertificateEncodingException, IllegalStateException, NoSuchAlgorithmException, SignatureException, InvalidKeyException {
+   public  Certificate createSignedCertificate(String issuerDn,String subjectDn,PublicKey certificatePublicKey,PrivateKey caSignerKey,String signingAlgrithm) throws CertificateEncodingException, IllegalStateException, NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         X509V3CertificateGenerator cert = new X509V3CertificateGenerator();
         cert.setSerialNumber(BigInteger.valueOf(1));   //or generate a random number  
         cert.setSubjectDN(new X509Principal(subjectDn));
@@ -44,7 +43,7 @@ public class CertificateFactory {
     }
    
    
-      public  X509Certificate createSelfSignedCertificate(String issuerDn,String subjectDn,
+      public Certificate createSelfSignedCertificate(String issuerDn,String subjectDn,
               KeyPair keyPair,String signingAlgrithm) throws CertificateEncodingException, IllegalStateException, NoSuchAlgorithmException, SignatureException, InvalidKeyException {
         X509V3CertificateGenerator cert = new X509V3CertificateGenerator();
         cert.setSerialNumber(BigInteger.valueOf(1));   //or generate a random number  
@@ -57,12 +56,13 @@ public class CertificateFactory {
         return cert.generate(keyPair.getPrivate());
     }
       
-    public  Certificate createCertificateFromFile(String path) throws FileNotFoundException, CertificateException {
+    public  Certificate createX509CertificateFromFile(String path) throws FileNotFoundException, CertificateException {
         java.security.cert.CertificateFactory certificateFactory = java.security.cert.CertificateFactory.getInstance( AppConsts.CERTIFICATE_TYPE_X509);
         InputStream certificateInputStream = new FileInputStream(path);
         Certificate certificate = certificateFactory.generateCertificate(certificateInputStream);
         return certificate;
     } 
+    
     public  Certificate createCertificateFromFile(String path,String type) throws FileNotFoundException, CertificateException {
         java.security.cert.CertificateFactory certificateFactory = java.security.cert.CertificateFactory.getInstance(type);
         InputStream certificateInputStream = new FileInputStream(path);

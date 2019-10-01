@@ -126,7 +126,7 @@ public class DemoUtils {
         
         String subjectDn="CN=Almissbah,O=nctr";
         KeyPair keyPair=DemoCryptoOperations.generate1024RsaKeyPair();
-        X509Certificate certifcate = DemoCryptoOperations.generateSelfSignedCertificate(keyPair, subjectDn);
+        Certificate certifcate = DemoCryptoOperations.generateSelfSignedCertificate(keyPair, subjectDn);
         
         keyStoreHolder.importKeyPair(subjectDn, keyPair.getPrivate(), new Certificate[]{certifcate});
        // keyStoreHolder.importCertificate(subjectDn, certifcate);
@@ -138,6 +138,6 @@ public class DemoUtils {
     
         String subjectDn="CN=Almissbah,O=nctr";
         KeyPair keyPair=DemoCryptoOperations.generate1024RsaKeyPair();
-        X509Certificate certifcate = DemoCryptoOperations.generateSelfSignedCertificate(keyPair, subjectDn);
+         Certificate certifcate = DemoCryptoOperations.generateSelfSignedCertificate(keyPair, subjectDn);
 }
 }

@@ -21,7 +21,7 @@ import static pki.tutorial.core.AppConsts.KEYSTORE_TYPE_PKCS12;
  */
 public class KeyStorefactory {
 
-    public KeyStore createKeyStoreFromFile(String keyStorePath, String pass) throws FileNotFoundException, KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
+    public KeyStore createPkcs12KeyStoreFromFile(String keyStorePath, String pass) throws FileNotFoundException, KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
         KeyStore keyStore = KeyStore.getInstance(KEYSTORE_TYPE_PKCS12);
         char[] keyStorePassword = pass.toCharArray();
         try (InputStream keyStoreData = new FileInputStream(keyStorePath)) {
@@ -30,8 +30,7 @@ public class KeyStorefactory {
         return keyStore;
     }
 
-    public  KeyStore createNewKeyStore() throws IOException, NoSuchAlgorithmException, CertificateException, KeyStoreException {
-
+    public  KeyStore createNewPkcs12KeyStore() throws IOException, NoSuchAlgorithmException, CertificateException, KeyStoreException {
         KeyStore keyStore = KeyStore.getInstance(KEYSTORE_TYPE_PKCS12);
         keyStore.load(null, null);
         return keyStore;

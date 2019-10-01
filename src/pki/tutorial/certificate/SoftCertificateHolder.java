@@ -28,6 +28,7 @@ public class SoftCertificateHolder implements CertficateHolder{
     private Certificate mCertificate;
     private final CertificateFactory certificateFactory;
     private final FileUtils fileUtils;
+    
     public SoftCertificateHolder(String path) {
         this.mCertificatePath = path;
         certificateFactory=new CertificateFactory();
@@ -50,7 +51,7 @@ public class SoftCertificateHolder implements CertficateHolder{
 
     @Override
     public void init() throws FileNotFoundException, CertificateException {
-       if(mCertificate==null) mCertificate = certificateFactory.createCertificateFromFile(mCertificatePath);
+       if(mCertificate==null) mCertificate = certificateFactory.createX509CertificateFromFile(mCertificatePath);
     }
 
     @Override
