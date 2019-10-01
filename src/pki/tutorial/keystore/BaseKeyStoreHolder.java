@@ -22,9 +22,9 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import pki.tutorial.utils.CryptoOperations;
-import pki.tutorial.utils.FileUtils;
-import pki.tutorial.utils.FileManager;
+import pki.tutorial.certificate.CertificateFactory;
+import static pki.tutorial.utils.AppConsts.ALG_SHA256_WITH_RSA;
+import pki.tutorial.utils.CryptoOperations; 
 
 /**
  *
@@ -34,10 +34,11 @@ public abstract class BaseKeyStoreHolder implements KeyStoreHolder {
 
     protected String mKeyStorePassword;
     protected KeyStore mkeyStore;
-    protected final FileUtils fileUtils;
-
+    protected  KeyStorefactory keyStoreFactory;
+    protected  CertificateFactory certificateFactory; 
     public BaseKeyStoreHolder() {
-        this.fileUtils = new FileManager();
+        this.keyStoreFactory = new KeyStorefactory();
+        this.certificateFactory=new CertificateFactory();
     }
 
     @Override
@@ -98,7 +99,7 @@ public abstract class BaseKeyStoreHolder implements KeyStoreHolder {
 
     @Override
     public void importCertificate(String alias, String path) throws KeyStoreException, FileNotFoundException, CertificateException {
-        mkeyStore.setCertificateEntry(alias, fileUtils.loadCertificate(path));
+        mkeyStore.setCertificateEntry(alias, certificateFactory.createCertificateFromFile(path));
     }
 
     @Override
@@ -130,13 +131,13 @@ public abstract class BaseKeyStoreHolder implements KeyStoreHolder {
     @Override
     public byte[] signData(String keyAlias, byte[] data) throws Exception{
         PrivateKey privateKey = getPrivateKey(keyAlias);
-     return CryptoOperations.signData(data, privateKey, CryptoOperations.ALG_SHA256_WITH_RSA);
+     return CryptoOperations.signData(data, privateKey,  ALG_SHA256_WITH_RSA);
  }
 
     @Override
     public boolean verifySignature(String keyAlias, byte[] data, byte[] signature) throws Exception{
         PublicKey publicKey = getCertificate(keyAlias).getPublicKey();
-      return CryptoOperations.verifySignature(data, publicKey, signature, CryptoOperations.ALG_SHA256_WITH_RSA); 
+      return CryptoOperations.verifySignature(data, publicKey, signature,  ALG_SHA256_WITH_RSA); 
     }
      
      

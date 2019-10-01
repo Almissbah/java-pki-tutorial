@@ -22,10 +22,7 @@ import pki.tutorial.keystore.soft.Pkcs12KeyStoreHolder;
  * @author mohamed
  */
 public interface KeyStoreHolder {
-
-    static final String KEYSTORE_TYPE_P12 = "P12";
-    static final String KEYSTORE_TYPE_ST3 = "St3Token";
-    static final String KEYSTORE_TYPE_BIT4ID = "Bit4idToken";
+public static enum KeyStoreHolderType {P12,ST3TOKEN,BIT4ID};
 
     //Every class should have its own init method
     void init(String keystorePassword) throws Exception;

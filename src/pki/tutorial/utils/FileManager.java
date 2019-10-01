@@ -24,23 +24,7 @@ import java.security.cert.Certificate;
  */
 public class FileManager implements FileUtils{
 
-    @Override
-    public  KeyStore loadKeyStore(String keyStorePath, String pass) throws FileNotFoundException, KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
-        KeyStore keyStore = KeyStore.getInstance(FileUtils.KEYSTORE_TYPE_PKCS12);
-        char[] keyStorePassword = pass.toCharArray();
-        try (InputStream keyStoreData = new FileInputStream(keyStorePath)) {
-            keyStore.load(keyStoreData, keyStorePassword);
-        }
-        return keyStore;
-    }
-
-    @Override
-    public  Certificate loadCertificate(String path) throws FileNotFoundException, CertificateException {
-        CertificateFactory certificateFactory = CertificateFactory.getInstance(FileUtils.CERT_TYPE_X509);
-        InputStream certificateInputStream = new FileInputStream(path);
-        Certificate certificate = certificateFactory.generateCertificate(certificateInputStream);
-        return certificate;
-    }
+  
 
     @Override
     public  byte[] readFile(String inputFilePath) throws IOException {
@@ -53,21 +37,7 @@ public class FileManager implements FileUtils{
         Files.write(Paths.get(path), data);
     }
 
-      @Override
-    public  KeyStore loadKeyStore(String keyStorePath, String pass,String type) throws FileNotFoundException, KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
-        KeyStore keyStore = KeyStore.getInstance(type);
-        char[] keyStorePassword = pass.toCharArray();
-        try (InputStream keyStoreData = new FileInputStream(keyStorePath)) {
-            keyStore.load(keyStoreData, keyStorePassword);
-        }
-        return keyStore;
-    }
+  
 
-    @Override
-    public  Certificate loadCertificate(String path,String type) throws FileNotFoundException, CertificateException {
-        CertificateFactory certificateFactory = CertificateFactory.getInstance(type);
-        InputStream certificateInputStream = new FileInputStream(path);
-        Certificate certificate = certificateFactory.generateCertificate(certificateInputStream);
-        return certificate;
-    }
+   
 }

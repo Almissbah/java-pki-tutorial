@@ -15,10 +15,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.security.cert.X509Certificate;
-import pki.tutorial.utils.FileUtils;
-import pki.tutorial.utils.FileManager;
-
+import java.security.cert.X509Certificate; 
 /**
  *
  * @author mohammed Almissbah 
@@ -27,21 +24,21 @@ public class SoftCertificateHolder implements CertficateHolder{
 
     private final String mCertificatePath;
     private Certificate mCertificate;
-    private final FileUtils fileUtils;
+    private final CertificateFactory certificateFactory;
     public SoftCertificateHolder(String path) {
         this.mCertificatePath = path;
-        fileUtils=new FileManager();
+        certificateFactory=new CertificateFactory();
     }
 
-    public SoftCertificateHolder(String mCertificatePath, FileUtils fileUtils) {
+    public SoftCertificateHolder(String mCertificatePath, CertificateFactory certificateFactory) {
         this.mCertificatePath = mCertificatePath;
-        this.fileUtils = fileUtils;
+        this.certificateFactory = certificateFactory;
     }
     
 
     @Override
     public void init() throws FileNotFoundException, CertificateException {
-        mCertificate = fileUtils.loadCertificate(mCertificatePath);
+        mCertificate = certificateFactory.createCertificateFromFile(mCertificatePath);
     }
 
     @Override

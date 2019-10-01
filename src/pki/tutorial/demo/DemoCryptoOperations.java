@@ -6,7 +6,7 @@
 package pki.tutorial.demo;
 
 import pki.tutorial.utils.CryptoOperations;
-import pki.tutorial.utils.KeyGenerator;
+import pki.tutorial.utils.KeyFactory;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -20,13 +20,9 @@ import java.security.cert.X509Certificate;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import static pki.tutorial.utils.CryptoOperations.ALG_AES;
-import static pki.tutorial.utils.CryptoOperations.ALG_RSA;
-import static pki.tutorial.utils.CryptoOperations.ALG_SHA256;
-import static pki.tutorial.utils.CryptoOperations.ALG_SHA256_WITH_RSA;
-import static pki.tutorial.utils.CryptoOperations.ENC_UTF_8;
-
+import javax.crypto.SecretKey; 
+import pki.tutorial.certificate.CertificateFactory;
+import static pki.tutorial.utils.AppConsts.*;
 /**
  *
  * @author mohammed Almissbah
@@ -36,11 +32,11 @@ public class DemoCryptoOperations {
 
 
     public static SecretKey generateAesKey(int keyBitSize) throws NoSuchAlgorithmException {
-     return KeyGenerator.generateSecretKey(keyBitSize, ALG_AES);
+     return KeyFactory.generateSecretKey(keyBitSize, ALG_AES);
     }
 
     public static KeyPair generate1024RsaKeyPair() throws NoSuchAlgorithmException {
-        return KeyGenerator.generateKeyPair(1024, ALG_RSA);
+        return KeyFactory.generateKeyPair(1024, ALG_RSA);
     }
 
     public static byte[] aesEncrypt(byte[] data, SecretKey key) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
@@ -74,7 +70,7 @@ public class DemoCryptoOperations {
     }
 
     public static X509Certificate generateSelfSignedCertificate(KeyPair keyPair,String subjectDn) throws CertificateEncodingException, IllegalStateException, NoSuchAlgorithmException, SignatureException, InvalidKeyException {
-       return CryptoOperations.generateCertificate(subjectDn, subjectDn, keyPair, keyPair.getPrivate(), ALG_SHA256_WITH_RSA);
+       return new CertificateFactory().createSelfSignedCertificate(subjectDn, subjectDn, keyPair, ALG_SHA256_WITH_RSA);
     }
 
     public static byte[] encodeUTF8(String data) throws UnsupportedEncodingException {

@@ -31,13 +31,12 @@ public abstract class Pkcs11KeyStoreHolder extends BaseKeyStoreHolder {
     public void init(String keystorePassword) throws Exception {
 
         this.mKeyStorePassword = keystorePassword;
-        buildKeyStore();
-        System.err.println("init Pkcs11KeyStoreHolder");
+        buildKeyStore(); 
     }
 
     private void buildKeyStore() throws Exception {
 
-        String pkcs11ConfigSettings = "name = " + tokenName + "\n" + "library = " + libPath;
+        String pkcs11ConfigSettings = getPkcs11Config(tokenName, libPath);
         byte[] pkcs11ConfigBytes = pkcs11ConfigSettings.getBytes();
         final ByteArrayInputStream confStream = new ByteArrayInputStream(pkcs11ConfigBytes);
 
@@ -54,4 +53,7 @@ public abstract class Pkcs11KeyStoreHolder extends BaseKeyStoreHolder {
         return true;
     }
 
+    private String getPkcs11Config(String tokenName,String libPath){
+        return "name = " + tokenName + "\n" + "library = " + libPath;
+    }
 }

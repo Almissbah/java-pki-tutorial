@@ -21,7 +21,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import pki.tutorial.certificate.CertificateFactory;
 import pki.tutorial.keystore.KeyStoreHolder;
+import pki.tutorial.keystore.KeyStoreHolder.KeyStoreHolderType;
 import pki.tutorial.keystore.KeyStoreHolderFactory;
 import pki.tutorial.utils.FileManager;
 
@@ -51,14 +53,17 @@ public class FileSignerUI extends javax.swing.JFrame {
     private File mKeyStoreFile;
     private File mFile;
     private KeyStoreHolder mKeystore;
-    private String currentSelectedKeyStoreType = "P12";
+    private KeyStoreHolderType currentSelectedKeyStoreType;
+    private KeyStoreHolderFactory keyStoreHolderFactory;
+    private CertificateFactory certificateFactory;
 
     /**
      * Creates new form MainUI
      */
     public FileSignerUI() {
         initComponents();
-
+        keyStoreHolderFactory = new KeyStoreHolderFactory();
+               certificateFactory=new CertificateFactory();
         addKeylistListener();
         //  ksTypeSpinner.
     }
@@ -67,20 +72,14 @@ public class FileSignerUI extends javax.swing.JFrame {
         ksTypeList.addItemListener((ItemEvent e) -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 // System.out.println("" + e.getItem().toString());
-                switch (e.getItem().toString()) {
-                    case KeyStoreHolder.KEYSTORE_TYPE_P12:
-                        ksBrowse.setEnabled(true);
-                        currentSelectedKeyStoreType = KeyStoreHolder.KEYSTORE_TYPE_P12;
-                        break;
-                    case KeyStoreHolder.KEYSTORE_TYPE_ST3:
-                        ksBrowse.setEnabled(false);
-                        currentSelectedKeyStoreType = KeyStoreHolder.KEYSTORE_TYPE_ST3;
-                        break;
-                    case KeyStoreHolder.KEYSTORE_TYPE_BIT4ID:
-                        ksBrowse.setEnabled(false);
-                        currentSelectedKeyStoreType = KeyStoreHolder.KEYSTORE_TYPE_BIT4ID;
-                        break;
+                currentSelectedKeyStoreType = KeyStoreHolderType.valueOf(e.getItem().toString());
+
+                if (currentSelectedKeyStoreType.equals(KeyStoreHolderType.P12)) {
+                    ksBrowse.setEnabled(true);
+                } else {
+                    ksBrowse.setEnabled(false);
                 }
+
             }
 
         });
@@ -182,7 +181,7 @@ public class FileSignerUI extends javax.swing.JFrame {
 
         ksLabel.setText("Select a keystore");
 
-        ksTypeList.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "P12", "St3Token", "Bit4idToken" }));
+        ksTypeList.setModel(new javax.swing.DefaultComboBoxModel(new String[] { KeyStoreHolderType.P12.name(), KeyStoreHolderType.ST3TOKEN.name(), KeyStoreHolderType.BIT4ID.name() }));
 
         btnImport.setText("Import");
         btnImport.setEnabled(false);
@@ -357,18 +356,17 @@ public class FileSignerUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnLoginActionPerformed
     private void buildKeyStore() {
-        KeyStoreHolderFactory factory = new KeyStoreHolderFactory();
 
         try {
-            if (currentSelectedKeyStoreType.equals(KeyStoreHolder.KEYSTORE_TYPE_P12)) {
+            if (currentSelectedKeyStoreType.equals(KeyStoreHolderType.P12)) {
                 if (mKeyStoreFile != null) {
-                    mKeystore = factory.getPkcs12KeyStore(mKeyStoreFile.getPath());
+                    mKeystore = keyStoreHolderFactory.createPkcs12KeyStore(mKeyStoreFile.getPath());
                     initKeystore();
                 } else {
                     showMessage(MSG_ERROR_NO_FILE_SELECTED);
                 }
             } else {
-                mKeystore = factory.getPkcs11KeyStore(currentSelectedKeyStoreType);
+                mKeystore = keyStoreHolderFactory.createPkcs11KeyStore(currentSelectedKeyStoreType);
                 initKeystore();
             }
 
@@ -382,7 +380,7 @@ public class FileSignerUI extends javax.swing.JFrame {
         String ksPasswordText = ksPassword.getText();
 
         mKeystore.init(ksPasswordText);
-         showMessage(ksPasswordText);
+        showMessage(ksPasswordText);
         if (mKeystore.isInitialized()) {
             btnLogin.setText("Logout");
             ksPassword.setEnabled(false);
@@ -499,16 +497,13 @@ public class FileSignerUI extends javax.swing.JFrame {
         if (i == JFileChooser.APPROVE_OPTION) {
             File fileToImport = fc.getSelectedFile();
             Certificate crt;
+     
             try {
-                crt = mFileManager.loadCertificate(fileToImport.getPath());
+                crt = certificateFactory.createCertificateFromFile(fileToImport.getPath());
 
                 mKeystore.importCertificate(((X509Certificate) crt).getSubjectDN().toString(), ((Certificate) crt));
                 loadKeyList();
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(FileSignerUI.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (CertificateException ex) {
-                Logger.getLogger(FileSignerUI.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (KeyStoreException ex) {
+            } catch (FileNotFoundException | CertificateException | KeyStoreException ex) {
                 Logger.getLogger(FileSignerUI.class.getName()).log(Level.SEVERE, null, ex);
             }
 

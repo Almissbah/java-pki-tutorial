@@ -28,10 +28,11 @@ import javax.crypto.SecretKey;
 import pki.tutorial.keystore.hard.Bit4IdToken;
 import pki.tutorial.certificate.SoftCertificateHolder;
 import pki.tutorial.utils.CryptoOperations;
-import pki.tutorial.utils.KeyGenerator;
+import pki.tutorial.utils.KeyFactory;
 import pki.tutorial.keystore.soft.Pkcs12KeyStoreHolder;
 import pki.tutorial.keystore.hard.St3Token;
 import pki.tutorial.keystore.KeyStoreHolder;
+import pki.tutorial.keystore.KeyStoreHolderFactory;
 
 /**
  *
@@ -107,7 +108,7 @@ public class DemoUtils {
     }
 
     public static void testKeyStore() throws KeyStoreException, IOException, FileNotFoundException, NoSuchAlgorithmException, CertificateException, Exception {
-        KeyStoreHolder keyStoreHolder=new KeyStoreHolder.Factory().getPkcs12KeyStore(KEYSTORE_PATH);
+        KeyStoreHolder keyStoreHolder=new KeyStoreHolderFactory().createPkcs12KeyStore(KEYSTORE_PATH);
         //keyStoreHolder = new Pkcs12KeyStoreHolder(KEYSTORE_PATH);
         // keyStoreHolder = St3Token.getInstance("12345678");
                 keyStoreHolder.init(KEYSTORE_PASS);

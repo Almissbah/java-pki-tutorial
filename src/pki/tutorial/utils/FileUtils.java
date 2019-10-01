@@ -18,13 +18,7 @@ import java.security.cert.CertificateException;
  * @author mohamed
  */
 public interface FileUtils {
-    public static final String KEYSTORE_TYPE_PKCS12 = "PKCS12";
-    public static final String CERT_TYPE_X509 = "X.509";
-    
-    Certificate loadCertificate(String path)  throws FileNotFoundException, CertificateException ;
-    KeyStore loadKeyStore(String keyStorePath,String KeySotrePassword) throws FileNotFoundException, KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException ;
-     Certificate loadCertificate(String path,String certType)  throws FileNotFoundException, CertificateException ;
-    KeyStore loadKeyStore(String keyStorePath,String KeySotrePassword,String keyStoreType) throws FileNotFoundException, KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException ;
+   
     byte[] readFile(String inputFilePath) throws IOException;
     void writeFile(byte[] data, String outPutFilePath) throws IOException;
 }

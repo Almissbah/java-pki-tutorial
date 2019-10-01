@@ -4,8 +4,7 @@
  * and open the template in the editor.
  */
 package pki.tutorial.keystore;
-
-import static pki.tutorial.keystore.KeyStoreHolder.KEYSTORE_TYPE_ST3;
+import pki.tutorial.keystore.KeyStoreHolder.KeyStoreHolderType;
 import pki.tutorial.keystore.hard.Bit4IdToken;
 import pki.tutorial.keystore.hard.St3Token;
 import pki.tutorial.keystore.soft.Pkcs12KeyStoreHolder;
@@ -17,12 +16,12 @@ import pki.tutorial.keystore.soft.Pkcs12KeyStoreHolder;
 public class KeyStoreHolderFactory {
     
 
-        public KeyStoreHolder getPkcs12KeyStore(String filePath) {
+        public KeyStoreHolder createPkcs12KeyStore(String filePath) {
             return new Pkcs12KeyStoreHolder(filePath);
         }
 
-        public KeyStoreHolder getPkcs11KeyStore(String keyStoreType) {
-            if (keyStoreType.equals(KEYSTORE_TYPE_ST3)) {
+        public KeyStoreHolder createPkcs11KeyStore(KeyStoreHolderType keyStoreType) {
+            if (keyStoreType.equals(KeyStoreHolderType.ST3TOKEN)) {
                 return St3Token.getInstance();
             } else {
                 return Bit4IdToken.getInstance();

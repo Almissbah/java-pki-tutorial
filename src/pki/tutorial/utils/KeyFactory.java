@@ -14,7 +14,8 @@ import javax.crypto.SecretKey;
  *
  * @author mohamed
  */
-public class KeyGenerator {
+public class KeyFactory {
+    
         public static SecretKey generateSecretKey(int keyBitSize, String algorithm) throws NoSuchAlgorithmException {
         javax.crypto.KeyGenerator keyGenerator = javax.crypto.KeyGenerator.getInstance(algorithm);
         keyGenerator.init(keyBitSize);
