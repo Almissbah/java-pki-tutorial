@@ -2,7 +2,7 @@
 This a simple implementation of JCE API.
 
 ## Screens :
-![Drag Racing](signer.PNG) ![Drag Racing](singer_loggedin.PNG)
+![Drag Racing](signer.PNG) 
 
 
 ## Features
