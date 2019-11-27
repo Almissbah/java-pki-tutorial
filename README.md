@@ -6,8 +6,8 @@ This a simple implementation of JCE API.
 
 
 ## Features
-1. generating symmetric and asymmetric keys.
-2. generating certificates.
+1. Generating symmetric and asymmetric keys.
+2. Generating certificates.
 3. Support for PKCS11 and PKCS12 keystores.
 4. Importing certificates into keystores.
 5. Deleting keys and certificates from keystores.
